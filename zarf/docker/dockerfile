@@ -1,0 +1,25 @@
+FROM golang:1.20  as build_sales-api
+ENV CGO_ENABLED 0
+ARG BUILD_REF
+
+
+COPY . /service
+WORKDIR /service
+
+RUN go build -ldflags "-X main.build=${BUILD_REF}"
+ 
+
+FROM gcr.io/distroless/static-debian11
+ARG BUILD_DATE
+ARG BUILD_REF
+COPY --from=build_sales-api /service /service/service3-clone
+WORKDIR  /service
+
+CMD [ "./service3-clone" ]
+
+LABEL org.opencontainers.image.created="${BUILD_DATE}}" \
+	org.opencontainers.image.title="sales-api" \
+	org.opencontainers.image.authors="Subhrajit Makur <makur.subhrajit@gmail.com>" \
+	org.opencontainers.image.source="https://github.com/avyukth/service3-clone" \
+	org.opencontainers.image.revision="${BUILD_REF}" \
+	org.opencontainers.image.vendoe="Subhrajit" 
