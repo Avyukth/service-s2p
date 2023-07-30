@@ -18,7 +18,7 @@ spec:
         app: service
     spec:
       dnsPolicy: ClusterFirstWithHostNet
-      hostNetWork: true
+      hostNetwork: true
       terminationGracePeriodSeconds: 60
       containers:
         - name: service-api
