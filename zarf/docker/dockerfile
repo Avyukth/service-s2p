@@ -7,12 +7,12 @@ COPY . /service
 WORKDIR /service
 
 RUN go build -ldflags "-X main.build=${BUILD_REF}"
- 
 
+#  Run the build  in minimum distro version
 FROM gcr.io/distroless/static-debian11
 ARG BUILD_DATE
 ARG BUILD_REF
-COPY --from=build_sales-api /service /service/service3-clone
+COPY --from=build_sales-api /service /service
 WORKDIR  /service
 
 CMD [ "./service3-clone" ]
