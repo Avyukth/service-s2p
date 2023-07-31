@@ -42,10 +42,10 @@ kind-apply:
 	cat zarf/k8s/base/service-pod/base-service.yaml | kubectl apply -f -
 
 kind-status-service:
-	kubectl get pods -o wide --watch --namespace=service-system
+	kubectl get pods -o wide --watch
 
 kind-logs:
-	kubectl logs -l app=service --all-containers=true -f --tail=100 --namespace=service-system
+	kubectl logs -l app=service --all-containers=true -f --tail=100
 
 kind-restart:
-	kubectl rollout restart deployment service-pod --namespace=service-system
+	kubectl rollout restart deployment service-pod
