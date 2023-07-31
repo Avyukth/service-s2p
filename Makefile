@@ -24,6 +24,7 @@ kind-up:
 		--image $(KIND) \
 		--name $(KIND_CLUSTER) \
 		--config zarf/k8s/kind/kind-config.yaml
+	kubectl config set-context --current --namespace=service-system
 
 kind-down:
 	kind delete cluster --name $(KIND_CLUSTER)
@@ -39,6 +40,9 @@ kind-status:
 
 kind-apply:
 	cat zarf/k8s/base/service-pod/base-service.yaml | kubectl apply -f -
+
+kind-status-service:
+	kubectl get pods -o wide --watch --namespace=service-system
 
 kind-logs:
 	kubectl logs -l app=service --all-containers=true -f --tail=100 --namespace=service-system
