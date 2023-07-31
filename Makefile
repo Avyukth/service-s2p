@@ -49,3 +49,8 @@ kind-logs:
 
 kind-restart:
 	kubectl rollout restart deployment service-pod
+
+kind-update: all kind-load kind-restart
+
+kind-describe:
+	kubectl describe pod -l app=service
