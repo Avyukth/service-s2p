@@ -18,7 +18,7 @@ func main() {
 		os.Exit(1)
 	}
 	g := runtime.GOMAXPROCS(0)
-	log.Printf("Starting the Service build[%s] CPU[%d].............", build, g)
+	log.Printf("Starting the sales API build[%s] CPU[%d].............", build, g)
 	defer log.Println("Service Ended")
 
 	shutdown := make(chan os.Signal, 1)

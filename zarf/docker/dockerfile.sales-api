@@ -4,7 +4,7 @@ ARG BUILD_REF
 
 
 COPY . /service
-WORKDIR /service
+WORKDIR /service/app/services/sales-api
 
 RUN go build -ldflags "-X main.build=${BUILD_REF}"
 
@@ -12,14 +12,14 @@ RUN go build -ldflags "-X main.build=${BUILD_REF}"
 FROM gcr.io/distroless/static-debian11
 ARG BUILD_DATE
 ARG BUILD_REF
-COPY --from=build_sales-api /service /service
+COPY --from=build_sales-api /service/app/services/sales-api /service
 WORKDIR  /service
 
-CMD [ "./service3-clone" ]
+CMD [ "./sales-api" ]
 
 LABEL org.opencontainers.image.created="${BUILD_DATE}}" \
 	org.opencontainers.image.title="sales-api" \
 	org.opencontainers.image.authors="Subhrajit Makur <makur.subhrajit@gmail.com>" \
-	org.opencontainers.image.source="https://github.com/avyukth/service3-clone" \
+	org.opencontainers.image.source="https://github.com/avyukth/service-s2p" \
 	org.opencontainers.image.revision="${BUILD_REF}" \
 	org.opencontainers.image.vendoe="Subhrajit" 
