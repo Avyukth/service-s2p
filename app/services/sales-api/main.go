@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"go.uber.org/automaxprocs/maxprocs"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"log"
@@ -26,6 +27,20 @@ func main() {
 }
 
 func run(log *zap.SugaredLogger) error {
+	// =========================================================================================================================
+	// GOMAXPROCS
+	// Set the correct number of threads based on the number of CPUs
+
+	if _, err := maxprocs.Set(); err != nil {
+		fmt.Println("maxprocs: %w", err)
+		os.Exit(1)
+	}
+
+	log.Infow("startup", "GOMAXPROCS", runtime.GOMAXPROCS(0))
+
+	// =================================================================================================================
+	// Configuration
+
 	return nil
 }
 
