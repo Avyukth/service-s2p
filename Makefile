@@ -62,4 +62,4 @@ kind-update-apply: all kind-load kind-apply
 # Module Vendor Support
 tidy:
 	go mod tidy
-	go mod vendor 
+	go mod vendor
