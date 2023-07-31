@@ -1,14 +1,13 @@
 package main
 
 import (
+	"fmt"
+	"go.uber.org/automaxprocs/maxprocs"
 	"log"
 	"os"
 	"os/signal"
 	"runtime"
 	"syscall"
-
-	"go.uber.org/automaxprocs"
-	"go.uber.org/automaxprocs/maxprocs"
 	// "github.com/ardanlabs/conf"
 	// "github.com/dimfeld/httptreemux/v5"
 )
