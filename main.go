@@ -1,6 +1,7 @@
 package main
 
 import (
+	"go.uber.org/automaxprocs"
 	"log"
 	"os"
 	"os/signal"

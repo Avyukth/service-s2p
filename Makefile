@@ -39,7 +39,7 @@ kind-status:
 	kubectl get pods -o wide --watch --all-namespaces
 
 kind-apply:
-	kustomize build zarf/k8s/base/service-pod | kubectl apply -f -
+	kustomize build zarf/k8s/kind/service-pod | kubectl apply -f -
 
 kind-status-service:
 	kubectl get pods -o wide --watch
@@ -54,3 +54,12 @@ kind-update: all kind-load kind-restart
 
 kind-describe:
 	kubectl describe pod -l app=service
+
+kind-update-apply: all kind-load kind-apply
+
+
+# =================================================================
+# Module Vendor Support
+tidy:
+	go mod tidy
+	go mod vendor 
