@@ -4,6 +4,7 @@ import (
 	"log"
 	"os"
 	"os/signal"
+	"runtime"
 	"syscall"
 	// "github.com/ardanlabs/conf"
 	// "github.com/dimfeld/httptreemux/v5"
@@ -12,7 +13,8 @@ import (
 var build = "develop"
 
 func main() {
-	log.Println("Starting Service .............", build)
+	g := runtime.GOMAXPROCS(0)
+	log.Printf("Starting the Service build[%s] CPU[%d].............", build, g)
 	defer log.Println("Service Ended")
 
 	shutdown := make(chan os.Signal, 1)
@@ -20,5 +22,4 @@ func main() {
 	<-shutdown
 
 	log.Panicln("stopping Service ........")
-
 }
