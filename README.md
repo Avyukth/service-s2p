@@ -1,6 +1,6 @@
 # Service Start to Production
 
-Short description of the project.
+This project describe how to create a production grade golang service using docker kubernetes cluster with logging configuration metrics as a sidecar service (continuing ........)
 
 ## Table of Contents
 
