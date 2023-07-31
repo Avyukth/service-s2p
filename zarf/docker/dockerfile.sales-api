@@ -22,4 +22,4 @@ LABEL org.opencontainers.image.created="${BUILD_DATE}}" \
 	org.opencontainers.image.authors="Subhrajit Makur <makur.subhrajit@gmail.com>" \
 	org.opencontainers.image.source="https://github.com/avyukth/service-s2p" \
 	org.opencontainers.image.revision="${BUILD_REF}" \
-	org.opencontainers.image.vendoe="Subhrajit" 
+	org.opencontainers.image.vendor="Subhrajit" 
