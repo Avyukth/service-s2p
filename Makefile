@@ -39,7 +39,7 @@ kind-status:
 	kubectl get pods -o wide --watch --all-namespaces
 
 kind-apply:
-	cat zarf/k8s/base/service-pod/base-service.yaml | kubectl apply -f -
+	kustomize build zarf/k8s/base/service-pod | kubectl apply -f -
 
 kind-status-service:
 	kubectl get pods -o wide --watch
