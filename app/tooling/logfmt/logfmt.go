@@ -50,13 +50,18 @@ func main() {
 		b.Reset()
 		b.WriteString(fmt.Sprintf("%s: %s: %s: %s: %s: %s: ", m["service"], m["time"], m["file"], m["level"], traceID, m["msg"]))
 
+		// Add the rest of the keys ignoring the ones we already
+		// added for the log.
 		for k, v := range m {
 			switch k {
 			case "service", "time", "file", "level", "trace_id", "msg":
 				continue
 			}
+			// It's nice to see the key[value] in this format
+			// especially since map ordering is random.
 			b.WriteString(fmt.Sprintf("%s[%v]:", k, v))
 		}
+		// Write the new log format, removing the last :
 		out := b.String()
 		fmt.Println(out[:len(out)-2])
 
