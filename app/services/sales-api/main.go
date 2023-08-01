@@ -79,6 +79,7 @@ func run(log *zap.SugaredLogger) error {
 
 	// =================================================================================================================
 	// App starting
+
 	log.Infow("starting service", "version", build)
 	defer log.Infow("stopping service complete")
 
@@ -101,6 +102,7 @@ func run(log *zap.SugaredLogger) error {
 	}()
 
 	// =================================================================================================================
+
 	shutdown := make(chan os.Signal, 1)
 	signal.Notify(shutdown, os.Interrupt, syscall.SIGTERM)
 	<-shutdown
