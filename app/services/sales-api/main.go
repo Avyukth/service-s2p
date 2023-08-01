@@ -10,7 +10,7 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/Avyukth/service-s2p/app/services/sales-api/handlers"
+	"github.com/Avyukth/service3-clone/app/services/sales-api/handlers"
 	"github.com/ardanlabs/conf/v3"
 	"go.uber.org/automaxprocs/maxprocs"
 	"go.uber.org/zap"
