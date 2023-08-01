@@ -58,7 +58,7 @@ func run(log *zap.SugaredLogger) error {
 	}{
 		Version: conf.Version{
 			Build: build,
-			Desc:  "Copyright information here.",
+			Desc:  "This is sales-api part of developing full production ready backend infrastructure Author: @Avyukth",
 		},
 	}
 
