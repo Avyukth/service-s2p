@@ -1,12 +1,13 @@
 package main
 
 import (
+	"bufio"
 	"encoding/json"
 	"flag"
 	"fmt"
 	"log"
+	"os"
 	"strings"
-	"text/scanner"
 )
 
 var service string
