@@ -2,7 +2,11 @@ module github.com/Avyukth/service3-clone
 
 go 1.20
 
-require go.uber.org/zap v1.24.0
+require (
+	github.com/ardanlabs/conf/v3 v3.1.6
+	go.uber.org/automaxprocs v1.5.3
+	go.uber.org/zap v1.24.0
+)
 
 require (
 	go.uber.org/atomic v1.11.0 // indirect

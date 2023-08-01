@@ -2,11 +2,14 @@ package main
 
 import (
 	"fmt"
+	"os"
+	"runtime"
+	"time"
+
+	"github.com/ardanlabs/conf/v3"
 	"go.uber.org/automaxprocs/maxprocs"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
-	"log"
-	"os"
 )
 
 var build = "develop"
@@ -41,17 +44,21 @@ func run(log *zap.SugaredLogger) error {
 	// =================================================================================================================
 	// Configuration
 
-	 cfg := struct{
-			conf.Version{
-				Web struct {
-					APIHost string `conf:"default:0.0.0.0:3000"`
-					DebugHost string `conf:"default:0.0.0.0:400"`
-					ReadTimeout time.Duration `conf:"default:5s"`
-					WriteTimeout time.Duration `conf:"default:10s"`
-					IdleTimeout time.Duration `conf:"default:120s"`
-					ShutdownTimeout time.Duration `conf:"default:20s"`
-				}
-			}
+	cfg := struct {
+		conf.Version
+		Web struct {
+			APIHost         string        `conf:"default:0.0.0.0:3000"`
+			DebugHost       string        `conf:"default:0.0.0.0:400"`
+			ReadTimeout     time.Duration `conf:"default:5s"`
+			WriteTimeout    time.Duration `conf:"default:10s"`
+			IdleTimeout     time.Duration `conf:"default:120s"`
+			ShutdownTimeout time.Duration `conf:"default:20s"`
+		}
+	}{
+		Version: conf.Version{
+			Build: build,
+			Desc:  "Copyright information here.",
+		},
 	}
 
 	return nil
