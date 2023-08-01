@@ -2,6 +2,7 @@ package main
 
 import (
 	"errors"
+	"expvar"
 	"fmt"
 	"net/http"
 	"os"
@@ -89,8 +90,9 @@ func run(log *zap.SugaredLogger) error {
 	}
 	log.Infow("startup", "config", out)
 
+	expvar.NewString("build").Set(build)
 	// =================================================================================================================
-	// Strating Debug Service
+	// Starting Debug Service
 
 	log.Infow("startup", "status", "debug router started", "host", cfg.Web.DebugHost)
 
