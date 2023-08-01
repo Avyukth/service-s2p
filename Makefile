@@ -4,7 +4,7 @@ KIND_CLUSTER    := subhrajit-starter-cluster
 KIND            := kindest/node:v1.27.3
 
 run:
-	go run app/services/sales-api/main.go  |  go run app/tooling/logfmt/main.go
+	go run app/services/sales-api/main.go
 
 
 all: sales-api
@@ -46,7 +46,7 @@ kind-status-sales:
 	kubectl get pods -o wide --watch
 
 kind-logs:
-	kubectl logs -l app=sales --all-containers=true -f --tail=100
+	kubectl logs -l app=sales --all-containers=true -f --tail=100 |  go run app/tooling/logfmt/main.go
 
 kind-restart:
 	kubectl rollout restart deployment sales-pod

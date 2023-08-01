@@ -4,7 +4,9 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"os/signal"
 	"runtime"
+	"syscall"
 	"time"
 
 	"github.com/ardanlabs/conf/v3"
@@ -84,6 +86,9 @@ func run(log *zap.SugaredLogger) error {
 	}
 	log.Infow("startup", "config", out)
 
+	shutdown := make(chan os.Signal, 1)
+	signal.Notify(shutdown, os.Interrupt, syscall.SIGTERM)
+	<-shutdown
 	return nil
 }
 
