@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"runtime"
@@ -59,6 +60,17 @@ func run(log *zap.SugaredLogger) error {
 			Build: build,
 			Desc:  "Copyright information here.",
 		},
+	}
+
+	const prefix = "SALES"
+
+	help, err := conf.Parse(prefix, &cfg)
+	if err != nil {
+		if errors.Is(err, conf.ErrHelpWanted) {
+			fmt.Println(help)
+			return nil
+		}
+		return fmt.Errorf("parse config: %w", err)
 	}
 
 	return nil
