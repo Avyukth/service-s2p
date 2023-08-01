@@ -73,6 +73,17 @@ func run(log *zap.SugaredLogger) error {
 		return fmt.Errorf("parse config: %w", err)
 	}
 
+	// =================================================================================================================
+	// App starting
+	log.Infow("starting service", "version", build)
+	defer log.Infow("stopping service complete")
+
+	out, err := conf.String(&cfg)
+	if err != nil {
+		return fmt.Errorf("generating config for output: %w", err)
+	}
+	log.Infow("startup", "config", out)
+
 	return nil
 }
 

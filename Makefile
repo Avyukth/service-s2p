@@ -4,7 +4,7 @@ KIND_CLUSTER    := subhrajit-starter-cluster
 KIND            := kindest/node:v1.27.3
 
 run:
-	go run app/services/sales-api/main.go --help
+	go run app/services/sales-api/main.go
 
 
 all: sales-api
