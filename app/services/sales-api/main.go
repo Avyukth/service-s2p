@@ -27,7 +27,7 @@ func main() {
 }
 
 func run(log *zap.SugaredLogger) error {
-	// =========================================================================================================================
+	// =================================================================================================================
 	// GOMAXPROCS
 	// Set the correct number of threads based on the number of CPUs
 
@@ -40,6 +40,19 @@ func run(log *zap.SugaredLogger) error {
 
 	// =================================================================================================================
 	// Configuration
+
+	 cfg := struct{
+			conf.Version{
+				Web struct {
+					APIHost string `conf:"default:0.0.0.0:3000"`
+					DebugHost string `conf:"default:0.0.0.0:400"`
+					ReadTimeout time.Duration `conf:"default:5s"`
+					WriteTimeout time.Duration `conf:"default:10s"`
+					IdleTimeout time.Duration `conf:"default:120s"`
+					ShutdownTimeout time.Duration `conf:"default:20s"`
+				}
+			}
+	}
 
 	return nil
 }
