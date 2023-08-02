@@ -118,6 +118,12 @@ func run(log *zap.SugaredLogger) error {
 		ErrorLog:     zap.NewStdLog(log.Desugar()),
 	}
 
+	serverErrors := make(chan error, 1)
+	go func() {
+		log.Infow("startup", "status", "starting API router", "host", api.Addr)
+		serverErrors <- api.ListenAndServe()
+	}()
+
 	return nil
 }
 
