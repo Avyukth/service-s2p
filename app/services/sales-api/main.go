@@ -110,6 +110,14 @@ func run(log *zap.SugaredLogger) error {
 	shutdown := make(chan os.Signal, 1)
 	signal.Notify(shutdown, syscall.SIGINT, syscall.SIGTERM)
 
+	apiMux := handlers.APIMux(handlers.APIMuxConfig{
+		Shutdown: shutdown,
+		Log:      log,
+		Metrics:  metrics.New(),
+		Auth:     auth,
+		DB:       db,
+	})
+
 	api := http.Server{
 		Addr:         cfg.Web.APIHost,
 		ReadTimeout:  cfg.Web.ReadTimeout,
