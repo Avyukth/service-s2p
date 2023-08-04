@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"encoding/json"
 	"expvar"
 	"net/http"
 	"net/http/pprof"
@@ -49,6 +48,6 @@ func APIMux(cfg APIMuxConfig) http.Handler {
 		Log: cfg.Log,
 	}
 
-	mux.Handle(http.MethodGet, "/test", tgh.Test)
+	mux.Handle(http.MethodGet, "/v1/test", tgh.Test)
 	return mux
 }
