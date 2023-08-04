@@ -28,7 +28,41 @@ spec:
               containerPort: 3000
             - name: sales-api-debug
               containerPort: 4000
-
+          readinessProbe:
+            httpGet:
+              path: /debug/readiness
+              port: 4000
+            initialDelaySeconds: 15
+            periodSeconds: 15
+            timeoutSeconds: 5
+            successThreshold: 1
+            failureThreshold: 2
+          livenessProbe:
+            httpGet:
+              path: /debug/liveness
+              port: 4000
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            timeoutSeconds: 5
+            successThreshold: 1
+            failureThreshold: 2
+          env:
+            - name: KUBERNETES_NAMESPACE
+              valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+            - name: KUBERNETES_POD_NAME
+              valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
+            - name: KUBERNETES_POD_IP
+              valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
+            - name: KUBERNETES_NODE_NAME
+              valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
 ---
 apiVersion: v1
 kind: Service
