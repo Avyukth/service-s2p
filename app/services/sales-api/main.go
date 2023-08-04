@@ -113,9 +113,6 @@ func run(log *zap.SugaredLogger) error {
 	apiMux := handlers.APIMux(handlers.APIMuxConfig{
 		Shutdown: shutdown,
 		Log:      log,
-		Metrics:  metrics.New(),
-		Auth:     auth,
-		DB:       db,
 	})
 
 	api := http.Server{
@@ -123,7 +120,7 @@ func run(log *zap.SugaredLogger) error {
 		ReadTimeout:  cfg.Web.ReadTimeout,
 		WriteTimeout: cfg.Web.WriteTimeout,
 		IdleTimeout:  cfg.Web.IdleTimeout,
-		Handler:      nil,
+		Handler:      apiMux,
 		ErrorLog:     zap.NewStdLog(log.Desugar()),
 	}
 
