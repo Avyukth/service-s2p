@@ -7,6 +7,7 @@ import (
 	"net/http/pprof"
 	"os"
 
+	"github.com/Avyukth/service3-clone/app/services/sales-api/handlers/debug/checkgrp"
 	"github.com/dimfeld/httptreemux/v5"
 	"go.uber.org/zap"
 )
@@ -24,6 +25,20 @@ func DebugStandardLibraryMux() *http.ServeMux {
 	mux.HandleFunc("/debug/pprof/symbol", pprof.Symbol)
 	mux.HandleFunc("/debug/pprof/trace", pprof.Trace)
 	mux.Handle("/debug/vars", expvar.Handler())
+	return mux
+}
+
+func DebugMux(build string, log *zap.SugaredLogger) http.Handler {
+
+	mux := DebugStandardLibraryMux()
+
+	cgh := checkgrp.Handlers{
+		Build: build,
+		Log:   log,
+	}
+
+	mux.HandleFunc("/debug/readiness", cgh.Readiness)
+	mux.HandleFunc("/debug/liveness", cgh.Liveness)
 	return mux
 }
 

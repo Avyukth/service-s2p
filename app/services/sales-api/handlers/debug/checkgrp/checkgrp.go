@@ -14,8 +14,10 @@ type Handlers struct {
 
 func (h *Handlers) Readiness(w http.ResponseWriter, r *http.Request) {
 	data := struct {
+		Build  string `json:"build"`
 		Status string `json:"status"`
 	}{
+		Build:  h.Build,
 		Status: "OK",
 	}
 	statusCode := http.StatusOK
