@@ -8,6 +8,7 @@ import (
 	"os"
 
 	"github.com/Avyukth/service3-clone/app/services/sales-api/handlers/debug/checkgrp"
+	"github.com/Avyukth/service3-clone/app/services/sales-api/handlers/v1/testgrp"
 	"github.com/dimfeld/httptreemux/v5"
 	"go.uber.org/zap"
 )
@@ -44,14 +45,10 @@ func DebugMux(build string, log *zap.SugaredLogger) http.Handler {
 
 func APIMux(cfg APIMuxConfig) http.Handler {
 	mux := httptreemux.NewContextMux()
-	h := func(w http.ResponseWriter, r *http.Request) {
-		status := struct {
-			Status string `json:"status"`
-		}{
-			Status: "OK",
-		}
-		json.NewEncoder(w).Encode(status)
+	tgh := testgrp.Handlers{
+		Log: cfg.Log,
 	}
-	mux.Handle(http.MethodGet, "/test", h)
+
+	mux.Handle(http.MethodGet, "/test", tgh.Test)
 	return mux
 }
