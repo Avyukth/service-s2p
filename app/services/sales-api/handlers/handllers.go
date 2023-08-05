@@ -8,7 +8,7 @@ import (
 
 	"github.com/Avyukth/service3-clone/app/services/sales-api/handlers/debug/checkgrp"
 	"github.com/Avyukth/service3-clone/app/services/sales-api/handlers/v1/testgrp"
-	"github.com/dimfeld/httptreemux/v5"
+	"github.com/Avyukth/service3-clone/foundation/web"
 	"go.uber.org/zap"
 )
 
@@ -42,12 +42,12 @@ func DebugMux(build string, log *zap.SugaredLogger) http.Handler {
 	return mux
 }
 
-func APIMux(cfg APIMuxConfig) http.Handler {
-	mux := httptreemux.NewContextMux()
+func APIMux(cfg APIMuxConfig) *web.App {
+	app := web.NewApp(cfg.Shutdown)
 	tgh := testgrp.Handlers{
 		Log: cfg.Log,
 	}
 
-	mux.Handle(http.MethodGet, "/v1/test", tgh.Test)
-	return mux
+	app.Handle(http.MethodGet, "/v1/test", tgh.Test)
+	return app
 }
