@@ -43,7 +43,9 @@ func DebugMux(build string, log *zap.SugaredLogger) http.Handler {
 }
 
 func APIMux(cfg APIMuxConfig) *web.App {
-	app := web.NewApp(cfg.Shutdown)
+	app := web.NewApp(
+		cfg.Shutdown,
+	)
 	v1(app, cfg)
 	return app
 }
