@@ -21,4 +21,5 @@ func (h Handlers) Test(w http.ResponseWriter, r *http.Request) error {
 
 	h.Log.Infow("readiness", "statusCode", statusCode, "method", r.Method, "path", r.URL.Path, "remoteaddr", r.RemoteAddr)
 	return json.NewEncoder(w).Encode(status)
+
 }
