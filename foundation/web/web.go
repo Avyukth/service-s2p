@@ -52,7 +52,6 @@ func (a *App) Handle(method string, group string, path string, handler Handler, 
 			return
 		}
 
-		// POST CODE  PROCESSING
 	}
 
 	finalPath := path
