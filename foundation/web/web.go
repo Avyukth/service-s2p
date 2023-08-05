@@ -2,11 +2,12 @@ package web
 
 import (
 	"context"
-	"github.com/google/uuid"
 	"net/http"
 	"os"
 	"syscall"
 	"time"
+
+	"github.com/google/uuid"
 
 	"github.com/dimfeld/httptreemux/v5"
 )
@@ -46,7 +47,7 @@ func (a *App) Handle(method string, group string, path string, handler Handler, 
 
 		ctx = context.WithValue(ctx, key, &v)
 
-		if err := handler(r.Context(), w, r); err != nil {
+		if err := handler(ctx, w, r); err != nil {
 			a.SignalShutdown()
 			return
 		}
