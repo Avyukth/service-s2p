@@ -8,6 +8,7 @@ import (
 
 	"github.com/Avyukth/service3-clone/app/services/sales-api/handlers/debug/checkgrp"
 	"github.com/Avyukth/service3-clone/app/services/sales-api/handlers/v1/testgrp"
+	"github.com/Avyukth/service3-clone/business/web/mid"
 	"github.com/Avyukth/service3-clone/foundation/web"
 	"go.uber.org/zap"
 )
@@ -45,7 +46,10 @@ func DebugMux(build string, log *zap.SugaredLogger) http.Handler {
 func APIMux(cfg APIMuxConfig) *web.App {
 	app := web.NewApp(
 		cfg.Shutdown,
+		mid.Logger(cfg.Log),
 	)
+
+	//
 	v1(app, cfg)
 	return app
 }
