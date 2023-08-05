@@ -1,4 +1,4 @@
-package mid
+package web
 
 import (
 	"context"
@@ -34,7 +34,7 @@ func GetTraceID(ctx context.Context) string {
 	return v.TraceID
 }
 
-func GetStatusCode(ctx context.Context, statusCode int) error {
+func SetStatusCode(ctx context.Context, statusCode int) error {
 	v, ok := ctx.Value(key).(*Values)
 	if !ok {
 		return errors.New("web value missing from context")
