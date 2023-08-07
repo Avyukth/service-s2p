@@ -47,6 +47,10 @@ spec:
             successThreshold: 1
             failureThreshold: 2
           env:
+            - name: GOMAXPROCS
+              valueFrom:
+                resourceFieldRef:
+                  resource: limits.cpu
             - name: KUBERNETES_NAMESPACE
               valueFrom:
                 fieldRef:
