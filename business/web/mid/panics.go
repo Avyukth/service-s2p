@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"runtime/debug"
 
 	"github.com/Avyukth/service3-clone/foundation/web"
 )
@@ -14,7 +15,10 @@ func Panics() web.Middleware {
 			defer func() {
 
 				if rec := recover(); rec != nil {
-					err = fmt.Errorf("PANIC [%v]", rec)
+
+					// adding stack trace information
+					trace := debug.Stack()
+					err = fmt.Errorf("PANIC [%v] TRACE[%s]", rec, string(trace))
 				}
 			}()
 			return handler(ctx, w, r)
