@@ -1,6 +1,9 @@
 package metrics
 
-import "expvar"
+import (
+	"context"
+	"expvar"
+)
 
 var m *Metrics
 
@@ -25,3 +28,39 @@ type ctxKey int
 const (
 	key ctxKey = 1
 )
+
+//
+
+func Set(ctx context.Context) context.Context {
+	return context.WithValue(ctx, key, m)
+}
+
+func AddGoroutines(ctx context.Context) {
+	if v, ok := ctx.Value(key).(*Metrics); ok {
+		if v.Goroutines.Value()%100 == 0 {
+			v.Goroutines.Add(1)
+		}
+	}
+}
+
+func AddRequests(ctx context.Context) {
+	if v, ok := ctx.Value(key).(*Metrics); ok {
+		v.Requests.Add(1)
+	}
+}
+
+//
+
+func AddErrors(ctx context.Context) {
+	if v, ok := ctx.Value(key).(*Metrics); ok {
+		v.Errors.Add(1)
+	}
+}
+
+//
+
+func AddPanics(ctx context.Context) {
+	if v, ok := ctx.Value(key).(*Metrics); ok {
+		v.Panics.Add(1)
+	}
+}
