@@ -9,7 +9,7 @@ import (
 type ctxKey int
 
 const (
-	key ctxKey = iota
+	key ctxKey = 1
 )
 
 type Values struct {
