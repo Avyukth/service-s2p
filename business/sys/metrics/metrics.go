@@ -37,7 +37,7 @@ func Set(ctx context.Context) context.Context {
 
 func AddGoroutines(ctx context.Context) {
 	if v, ok := ctx.Value(key).(*metrics); ok {
-		if v.goroutines.Value()%100 == 0 {
+		if v.requests.Value()%100 == 0 {
 			v.goroutines.Add(1)
 		}
 	}
