@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"runtime/debug"
 
+	"github.com/Avyukth/service3-clone/business/sys/metrics"
 	"github.com/Avyukth/service3-clone/foundation/web"
 )
 
@@ -19,6 +20,8 @@ func Panics() web.Middleware {
 					// adding stack trace information
 					trace := debug.Stack()
 					err = fmt.Errorf("PANIC [%v] TRACE[%s]", rec, string(trace))
+
+					metrics.AddPanics(ctx)
 				}
 			}()
 			return handler(ctx, w, r)
