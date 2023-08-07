@@ -5,7 +5,7 @@ import (
 	"errors"
 )
 
-var ErrInvalidID = errors.New("Id is not in its proper form")
+var ErrInvalidID = errors.New("id is not in its proper form")
 
 type ErrorResponse struct {
 	Error  string `json:"error"`
@@ -28,7 +28,7 @@ func (e *RequestError) Error() string {
 
 type FieldError struct {
 	Field string `json:"field"`
-	Erro  string `json:"error"`
+	Error string `json:"error"`
 }
 
 type FieldErrors []FieldError
