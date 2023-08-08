@@ -7,6 +7,9 @@ import (
 	"encoding/pem"
 	"fmt"
 	"os"
+	"time"
+
+	"github.com/golang-jwt/jwt/v5"
 )
 
 func main() {
@@ -18,9 +21,9 @@ func main() {
 }
 
 func genToken() error {
-	claims = struct {
-		RegisteredClaims jwt.RegisteredClaims `json:"registered"`
-		Roles            []string             `json:"roles"`
+	claims := struct {
+		jwt.RegisteredClaims `json:"registered"`
+		Roles                []string `json:"roles"`
 	}{
 		jwt.RegisteredClaims{
 			// A usual scenario is to set the expiration time relative to the current time
@@ -32,8 +35,12 @@ func genToken() error {
 			ID:        "1",
 			Audience:  []string{"somebody_else"},
 		},
-		Roles: []string{"ADMIN"},
+		[]string{"ADMIN"},
 	}
+
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims.RegisteredClaims)
+	ss, err := token.SignedString(mySigningKey)
+	fmt.Printf("%v %v", ss, err)
 
 	return nil
 }
