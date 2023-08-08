@@ -6,6 +6,7 @@ import (
 	"crypto/x509"
 	"encoding/pem"
 	"fmt"
+	"io"
 	"os"
 	"time"
 
@@ -37,10 +38,37 @@ func genToken() error {
 		},
 		[]string{"ADMIN"},
 	}
+	method := jwt.SigningMethodRS256
+	token := jwt.NewWithClaims(method, claims.RegisteredClaims)
+	token.Header["kid"] = "995fcf0b-73d9-4516-a32f-4e85d723f06d"
 
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims.RegisteredClaims)
-	ss, err := token.SignedString(mySigningKey)
-	fmt.Printf("%v %v", ss, err)
+	name := "zarf/keys/995fcf0b-73d9-4516-a32f-4e85d723f06d.pem"
+
+	file, err := os.Open(name)
+	if err != nil {
+		return err
+	}
+
+	privatePEM, err := io.ReadAll(io.LimitReader(file, 1024*1024))
+
+	if err != nil {
+		return fmt.Errorf("reading auth private key: %w", err)
+	}
+
+	privateKey, err := jwt.ParseECPrivateKeyFromPEM(privatePEM)
+	if err != nil {
+		return fmt.Errorf("parsing auth private key: %w", err)
+	}
+
+	ss, err := token.SignedString(privateKey)
+	if err != nil {
+		return fmt.Errorf("signing token: %w", err)
+	}
+
+	fmt.Println("====================TOKEN STARTED======================")
+	fmt.Println(ss)
+
+	fmt.Println("====================TOKEN ENDED======================")
 
 	return nil
 }
