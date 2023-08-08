@@ -10,11 +10,32 @@ import (
 )
 
 func main() {
-	err := genKey()
+	err := genToken()
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
+}
+
+func genToken() error {
+	claims = struct {
+		RegisteredClaims jwt.RegisteredClaims `json:"registered"`
+		Roles            []string
+	}{
+		jwt.RegisteredClaims{
+			// A usual scenario is to set the expiration time relative to the current time
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(24 * time.Hour)),
+			IssuedAt:  jwt.NewNumericDate(time.Now()),
+			NotBefore: jwt.NewNumericDate(time.Now()),
+			Issuer:    "service Project",
+			Subject:   "123456789",
+			ID:        "1",
+			Audience:  []string{"somebody_else"},
+		},
+		Roles: []string{"ADMIN"},
+	}
+
+	return nil
 }
 
 func genKey() error {
