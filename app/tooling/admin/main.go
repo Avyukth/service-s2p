@@ -20,7 +20,7 @@ func main() {
 func genToken() error {
 	claims = struct {
 		RegisteredClaims jwt.RegisteredClaims `json:"registered"`
-		Roles            []string
+		Roles            []string             `json:"roles"`
 	}{
 		jwt.RegisteredClaims{
 			// A usual scenario is to set the expiration time relative to the current time
