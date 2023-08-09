@@ -75,3 +75,18 @@ func (a *Auth) GenerateToken(claims Claims) (string, error) {
 	}
 	return tokenSString, nil
 }
+
+func (a *Auth) ValidateToken(tokenString string) (Claims, error) {
+	var claims Claims
+	token, err := a.parser.ParseWithClaims(tokenString, claims, a.keyFunc)
+
+	if err != nil {
+		return claims, fmt.Errorf("token parsing Failed: %w", err)
+	}
+
+	if !token.Valid {
+
+		return claims, errors.New("token is not valid")
+	}
+	return claims, nil
+}
