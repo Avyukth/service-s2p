@@ -133,7 +133,7 @@ func genToken() error {
 		return &privateKey.PublicKey, nil
 	}
 
-	var parsedClaims = struct {
+	var parsedClaims struct {
 		jwt.RegisteredClaims `json:"registered"`
 		Roles                []string `json:"roles"`
 	}
@@ -146,7 +146,7 @@ func genToken() error {
 		return fmt.Errorf("token is not valid")
 	}
 
-	fmt.Println("========== Token valided:")
+	fmt.Println("========== Token validated")
 	return nil
 }
 
