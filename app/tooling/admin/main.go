@@ -27,7 +27,7 @@ func genToken() error {
 	//	==================================================================================
 	// Get private key file from Disk.
 
-	name, err := genPrivateKey()
+	name, kid, err := genPrivateKey()
 	if err != nil {
 		return fmt.Errorf("error getting private key name: %w", err)
 	}
@@ -80,7 +80,7 @@ func genToken() error {
 	}
 	method := jwt.SigningMethodRS256
 	token := jwt.NewWithClaims(method, claims.RegisteredClaims)
-	token.Header["kid"] = "995fcf0b-73d9-4516-a32f-4e85d723f06d"
+	token.Header["kid"] = kid
 
 	tokenStr, err := token.SignedString(privateKey)
 	if err != nil {
@@ -205,17 +205,18 @@ func genToken() error {
 // 	return nil
 // }
 
-func genPrivateKey() (string, error) {
+func genPrivateKey() (string, string, error) {
 
 	privateKey, err := rsa.GenerateKey(rand.Reader, 2048)
 
 	if err != nil {
-		return "", err
+		return "", "", err
 	}
-	name := "zarf/keys/" + uuid.New().String() + ".pem"
+	kid := uuid.New().String()
+	name := "zarf/keys/" + kid + ".pem"
 	privateKeyFile, err := os.OpenFile(name, os.O_CREATE|os.O_RDWR|os.O_TRUNC, 0644)
 	if err != nil {
-		return "", fmt.Errorf("creating private.pem file: %w", err)
+		return "", "", fmt.Errorf("creating private.pem file: %w", err)
 	}
 
 	defer privateKeyFile.Close()
@@ -226,10 +227,10 @@ func genPrivateKey() (string, error) {
 	}
 
 	if err := pem.Encode(privateKeyFile, &privateBlock); err != nil {
-		return "", fmt.Errorf("encoding to private file: %v", err)
+		return "", "", fmt.Errorf("encoding to private file: %v", err)
 	}
 	fmt.Println("==================================pem generate")
-	return name, nil
+	return name, kid, nil
 	// ============================================================================================================================
 
 }
