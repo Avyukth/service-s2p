@@ -96,3 +96,15 @@ func (ks *Keystore) PrivateKey(kid string) (*rsa.PrivateKey, error) {
 
 	return privateKey, nil
 }
+
+func (ks *Keystore) PublicKey(kid string) (*rsa.PublicKey, error) {
+	ks.mu.Lock()
+	defer ks.mu.Unlock()
+	privateKey, found := ks.store[kid]
+	if !found {
+		return nil, fmt.Errorf("key %s  and corresponding public key not found", kid)
+	}
+
+	return &privateKey.PublicKey, nil
+
+}
