@@ -73,3 +73,26 @@ func NewFs(fsys fs.FS) (*Keystore, error) {
 	return &ks, nil
 
 }
+
+func (ks *Keystore) Add(privateKey *rsa.PrivateKey, kid string) {
+	ks.mu.Lock()
+	defer ks.mu.Unlock()
+	ks.store[kid] = privateKey
+}
+
+func (ks *Keystore) Remove(kid string) {
+	ks.mu.Lock()
+	defer ks.mu.Unlock()
+	delete(ks.store, kid)
+}
+
+func (ks *Keystore) PrivateKey(kid string) (*rsa.PrivateKey, error) {
+	ks.mu.Lock()
+	defer ks.mu.Unlock()
+	privateKey, found := ks.store[kid]
+	if !found {
+		return nil, fmt.Errorf("key %s not found", kid)
+	}
+
+	return privateKey, nil
+}
