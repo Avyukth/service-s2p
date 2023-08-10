@@ -53,17 +53,23 @@ func NewFs(fsys fs.FS) (*Keystore, error) {
 
 		privatePEM, err := io.ReadAll(io.LimitReader(file, 1024*1024))
 		if err != nil {
-			return fmt.Errorf("failed to auth private key: %w", fileName, err)
+			return fmt.Errorf("failed to auth private key: %w", err)
 		}
 
 		privateKey, err := jwt.ParseRSAPrivateKeyFromPEM(privatePEM)
 		if err != nil {
-			return fmt.Errorf("failed to parse auth private key: %w", fileName, err)
+			return fmt.Errorf("failed to parse auth private key: %w", err)
 		}
 
 		ks.store[strings.TrimSuffix(dirEntry.Name(), ".pem")] = privateKey
 
 		return nil
 	}
+
+	if err := fs.WalkDir(fsys, ".", fn); err != nil {
+		return nil, fmt.Errorf("walking directory: %w", err)
+	}
+
+	return &ks, nil
 
 }
