@@ -81,7 +81,7 @@ func genToken() error {
 		[]string{"ADMIN"},
 	}
 	method := jwt.SigningMethodRS256
-	token := jwt.NewWithClaims(method, claims.RegisteredClaims)
+	token := jwt.NewWithClaims(method, claims)
 	token.Header["kid"] = kid
 
 	tokenStr, err := token.SignedString(privateKey)
