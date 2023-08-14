@@ -1,6 +1,8 @@
-# Service Start to Production
+# Golang Service Start to Production
 
-This project describe how to create a production grade golang service using docker kubernetes cluster with logging configuration metrics as a sidecar service (continuing ........)
+### Overview
+
+Create a robust Golang service, deploy it using Docker and Kubernetes, and enhance it with logging, configuration metrics, (continue ............)
 
 ## Table of Contents
 
@@ -15,8 +17,6 @@ This project describe how to create a production grade golang service using dock
     - [Deploying the Service to Kubernetes](#deploying-the-service-to-kubernetes)
 - [Commands](#commands)
 - [Module Vendor Support](#module-vendor-support)
-- [Contributing](#contributing)
-- [License](#license)
 
 ## Introduction
 
@@ -39,12 +39,16 @@ List any software or tools that must be installed before running the application
 
 Instructions on how to clone the repository and install the necessary dependencies.
 
+---
+
 ```bash
 $ git clone https://github.com/avyukth/service-s2p.git
 $ cd project
 $ go mod tidy
 $ go mod vendor
 ```
+
+---
 
 ## Usage
 
@@ -54,9 +58,13 @@ $ go mod vendor
 
 To run the application locally, execute the following command:
 
+---
+
 ```bash
 $ go run main.go
 ```
+
+---
 
 ### Kubernetes Cluster
 
@@ -66,17 +74,25 @@ If you want to deploy the service to a Kubernetes cluster, follow the steps belo
 
 Create a local Kubernetes cluster using Kind:
 
+---
+
 ```bash
 $ make kind-up
 ```
+
+---
 
 #### Deploying the Service to Kubernetes
 
 Build and deploy the Docker image to the Kubernetes cluster:
 
+---
+
 ```bash
 $ make kind-update-apply
 ```
+
+---
 
 ## Commands
 

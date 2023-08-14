@@ -12,6 +12,8 @@ RUN go build -ldflags "-X main.build=${BUILD_REF}"
 FROM gcr.io/distroless/static-debian11
 ARG BUILD_DATE
 ARG BUILD_REF
+
+COPY --from=build_sales-api /service/zarf/keys/. /service/zarf/keys/.
 COPY --from=build_sales-api /service/app/services/sales-api /service
 WORKDIR  /service
 

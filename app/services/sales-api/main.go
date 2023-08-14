@@ -13,6 +13,8 @@ import (
 	"time"
 
 	"github.com/Avyukth/service3-clone/app/services/sales-api/handlers"
+	"github.com/Avyukth/service3-clone/business/sys/auth"
+	"github.com/Avyukth/service3-clone/foundation/web/keystore"
 	"github.com/ardanlabs/conf/v3"
 	"go.uber.org/automaxprocs/maxprocs"
 	"go.uber.org/zap"
@@ -97,6 +99,24 @@ func run(log *zap.SugaredLogger) error {
 
 	expvar.NewString("build").Set(build)
 	// =================================================================================================================
+	// Initialize Authentication Support
+	log.Infow("startup", "status", "Initializing Authentication Support")
+
+	// construct a in memory key store based on the key file stored
+	// in the specified directory
+
+	ks, err := keystore.NewFs(os.DirFS(cfg.Auth.KeysFolder))
+	if err != nil {
+		return fmt.Errorf("reading Keys: %w", err)
+	}
+
+	auth, err := auth.New(cfg.Auth.ActiveKID, ks)
+
+	if err != nil {
+		return fmt.Errorf("initializing auth: %w", err)
+	}
+
+	// =================================================================================================================
 	// Starting Debug Service
 
 	log.Infow("startup", "status", "debug router started", "host", cfg.Web.DebugHost)
@@ -117,6 +137,7 @@ func run(log *zap.SugaredLogger) error {
 	apiMux := handlers.APIMux(handlers.APIMuxConfig{
 		Shutdown: shutdown,
 		Log:      log,
+		Auth:     auth,
 	})
 
 	api := http.Server{
