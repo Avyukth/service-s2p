@@ -13,8 +13,8 @@ const (
 )
 
 type Claims struct {
-	jwt.RegisteredClaims
-	Roles []string `json:"roles"`
+	jwt.RegisteredClaims `json:"registered"`
+	Roles                []string `json:"roles"`
 }
 
 func (c Claims) Authorized(roles ...string) bool {
