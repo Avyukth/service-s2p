@@ -23,8 +23,8 @@ type Auth struct {
 	parser    jwt.Parser
 }
 
-func New(activeKID string, ketLookup KeyLookup) (*Auth, error) {
-	_, err := ketLookup.PrivateKey(activeKID)
+func New(activeKID string, keyLookup KeyLookup) (*Auth, error) {
+	_, err := keyLookup.PrivateKey(activeKID)
 	if err != nil {
 		return nil, errors.New("active key does not exist in store")
 	}
@@ -42,15 +42,14 @@ func New(activeKID string, ketLookup KeyLookup) (*Auth, error) {
 		if !ok {
 			return nil, errors.New("user token key id (kid) in token header must be string")
 		}
-		return ketLookup.PrivateKey(kidID)
-
+		return keyLookup.PublicKey(kidID)
 	}
 
 	parser := jwt.Parser{}
 
 	a := Auth{
 		activeKID: activeKID,
-		ketLookup: ketLookup,
+		ketLookup: keyLookup,
 		method:    method,
 		keyFunc:   keyFunc,
 		parser:    parser,
@@ -61,7 +60,7 @@ func New(activeKID string, ketLookup KeyLookup) (*Auth, error) {
 }
 
 func (a *Auth) GenerateToken(claims Claims) (string, error) {
-	token := jwt.NewWithClaims(a.method, claims)
+	token := jwt.NewWithClaims(a.method, claims.RegisteredClaims)
 	token.Header["kid"] = a.activeKID
 
 	privateKey, err := a.ketLookup.PrivateKey(a.activeKID)
@@ -70,6 +69,7 @@ func (a *Auth) GenerateToken(claims Claims) (string, error) {
 	}
 
 	tokenSString, err := token.SignedString(privateKey)
+	fmt.Println("================================ token string", tokenSString, a.activeKID)
 	if err != nil {
 		return "", fmt.Errorf("token signing Failed: %v", err)
 	}
@@ -78,14 +78,13 @@ func (a *Auth) GenerateToken(claims Claims) (string, error) {
 
 func (a *Auth) ValidateToken(tokenString string) (Claims, error) {
 	var claims Claims
-	token, err := a.parser.ParseWithClaims(tokenString, claims, a.keyFunc)
+	token, err := a.parser.ParseWithClaims(tokenString, &claims, a.keyFunc)
 
 	if err != nil {
 		return claims, fmt.Errorf("token parsing Failed: %w", err)
 	}
 
 	if !token.Valid {
-
 		return claims, errors.New("token is not valid")
 	}
 	return claims, nil

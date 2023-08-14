@@ -27,10 +27,12 @@ func genToken() error {
 	//	==================================================================================
 	// Get private key file from Disk.
 
-	name, kid, err := genPrivateKey()
-	if err != nil {
-		return fmt.Errorf("error getting private key name: %w", err)
-	}
+	// name, kid, err := genPrivateKey()
+	name := "zarf/keys/133d7df7-d74c-4802-985c-f4a64e696f47.pem"
+	kid := "133d7df7-d74c-4802-985c-f4a64e696f47"
+	// if err != nil {
+	// 	return fmt.Errorf("error getting private key name: %w", err)
+	// }
 
 	// file, err := os.Open(name)
 	// if err != nil {
