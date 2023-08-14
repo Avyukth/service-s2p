@@ -8,6 +8,7 @@ import (
 
 	"github.com/Avyukth/service3-clone/app/services/sales-api/handlers/debug/checkgrp"
 	"github.com/Avyukth/service3-clone/app/services/sales-api/handlers/v1/testgrp"
+	"github.com/Avyukth/service3-clone/business/sys/auth"
 	"github.com/Avyukth/service3-clone/business/web/mid"
 	"github.com/Avyukth/service3-clone/foundation/web"
 	"go.uber.org/zap"
@@ -16,6 +17,7 @@ import (
 type APIMuxConfig struct {
 	Shutdown chan os.Signal
 	Log      *zap.SugaredLogger
+	Auth     *auth.Auth
 }
 
 func DebugStandardLibraryMux() *http.ServeMux {
@@ -65,4 +67,5 @@ func v1(app *web.App, cfg APIMuxConfig) {
 	}
 
 	app.Handle(http.MethodGet, version, "/test", tgh.Test)
+	app.Handle(http.MethodGet, version, "/testauth", tgh.Test, mid.Authenticate(cfg.Auth), mid.Authorize("ADMIN"))
 }

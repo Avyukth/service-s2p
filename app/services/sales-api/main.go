@@ -61,6 +61,10 @@ func run(log *zap.SugaredLogger) error {
 			IdleTimeout     time.Duration `conf:"default:120s"`
 			ShutdownTimeout time.Duration `conf:"default:20s"`
 		}
+		Auth struct {
+			KeysFolder string `conf:"default:zarf/keys/"`
+			ActiveKID  string `conf:"default:061d3522-61fc-4c10-91b1-3502cef8926c"`
+		}
 	}{
 		Version: conf.Version{
 			Build: build,
