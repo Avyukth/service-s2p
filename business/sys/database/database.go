@@ -1,6 +1,11 @@
 package database
 
 import (
+	"context"
+	"errors"
+	"net/url"
+	"time"
+
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
 )
@@ -22,6 +27,54 @@ type Config struct {
 	DisableTLS   bool
 }
 
-func Open(c Config) (*sqlx.DB, error) {
+func Open(cfg Config) (*sqlx.DB, error) {
+	sslMode := "require"
 
+	if cfg.DisableTLS {
+		sslMode = "disable"
+	}
+
+	q := make(url.Values)
+	q.Set("sslmode", sslMode)
+	q.Set("timezone", "UTC")
+
+	u := url.URL{
+		Scheme:   "postgres",
+		User:     url.UserPassword(cfg.User, cfg.Password),
+		Host:     cfg.Host,
+		Path:     cfg.Name,
+		RawQuery: q.Encode(),
+	}
+	db, err := sqlx.Open("postgres", u.String())
+	if err != nil {
+		return nil, err
+	}
+
+	db.SetMaxIdleConns(cfg.MaxIdleConns)
+	db.SetMaxOpenConns(cfg.MaxOpenConns)
+
+	return db, nil
+}
+
+func StatusCheck(ctx context.Context, db *sqlx.DB) error {
+	var pingError error
+	for attempts := 1; ; attempts++ {
+		pingError = db.Ping()
+		if pingError == nil {
+			break
+		}
+		time.Sleep(time.Duration(attempts) * 100 * time.Millisecond)
+
+		if ctx.Err() != nil {
+			return ctx.Err()
+		}
+	}
+
+	if ctx.Err() != nil {
+		return ctx.Err()
+	}
+
+	const q = `SELECT true`
+	var tmp bool
+	return db.QueryRowContext(ctx, q).Scan(&tmp)
 }
