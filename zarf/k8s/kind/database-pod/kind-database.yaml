@@ -27,10 +27,10 @@ spec:
           image: postgres:latest
           resources:
             limits:
-              cpu: 1000m
-              memory: 512 MiB
-            requests:
               cpu: 2000m
+              memory: 512Mi
+            requests:
+              cpu: 1000m
           imagePullPolicy: Always
           env:
             - name: POSTGRES_PASSWORD
