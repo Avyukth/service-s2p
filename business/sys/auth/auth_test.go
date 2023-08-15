@@ -22,7 +22,7 @@ func TestAuth(t *testing.T) {
 		testID := 0
 		t.Logf("\tTest %d:\tWhen Handling a single user", testID)
 		{
-			const KeyID = "12345678901234567890"
+			const KeyID = "133d7df7-d74c-4802-985c-f4a64e696f47"
 			privateKey, err := rsa.GenerateKey(rand.Reader, 2048)
 			if err != nil {
 				t.Fatalf("\t%s\tTest %d:\tShould be able to generate private key: %v", failed, testID, err)
@@ -45,7 +45,7 @@ func TestAuth(t *testing.T) {
 					ID:        "1",
 					Audience:  []string{"somebody_else"},
 				},
-				[]string{"ADMIN"},
+				[]string{auth.RoleAdmin},
 			}
 			token, err := a.GenerateToken(claims)
 			if err != nil {
