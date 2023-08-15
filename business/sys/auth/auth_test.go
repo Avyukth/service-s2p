@@ -27,14 +27,13 @@ func TestAuth(t *testing.T) {
 			if err != nil {
 				t.Fatalf("\t%s\tTest %d:\tShould be able to generate private key: %v", failed, testID, err)
 			}
-			t.Fatalf("\t%s\tTest %d:\tShould be able to generate private key.", success, testID)
+			t.Logf("\t%s\tTest %d:\tShould be able to generate private key.", success, testID)
 			a, err := auth.New(KeyID, &keyStore{pk: privateKey})
 			if err != nil {
 				t.Fatalf("\t%s\tTest %d:\tShould be able to create authenticator: %v", failed, testID, err)
 			}
 			t.Logf("\t%s\tTest %d:\tShould be able to create authenticator.", success, testID)
 			claims := auth.Claims{
-
 				jwt.RegisteredClaims{
 					// A usual scenario is to set the expiration time relative to the current time
 					ExpiresAt: jwt.NewNumericDate(time.Now().Add(24 * time.Hour)),

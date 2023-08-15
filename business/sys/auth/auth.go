@@ -60,7 +60,7 @@ func New(activeKID string, keyLookup KeyLookup) (*Auth, error) {
 }
 
 func (a *Auth) GenerateToken(claims Claims) (string, error) {
-	token := jwt.NewWithClaims(a.method, claims.RegisteredClaims)
+	token := jwt.NewWithClaims(a.method, claims)
 	token.Header["kid"] = a.activeKID
 
 	privateKey, err := a.ketLookup.PrivateKey(a.activeKID)
@@ -69,7 +69,6 @@ func (a *Auth) GenerateToken(claims Claims) (string, error) {
 	}
 
 	tokenSString, err := token.SignedString(privateKey)
-	fmt.Println("================================ token string", tokenSString, a.activeKID)
 	if err != nil {
 		return "", fmt.Errorf("token signing Failed: %v", err)
 	}
