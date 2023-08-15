@@ -16,6 +16,10 @@ run:
 admin:
 	go run app/tooling/admin/main.go
 
+test:
+	go test ./... -count=1
+	staticcheck -checks=all ./...
+
 all: sales-api
 
 sales-api:
