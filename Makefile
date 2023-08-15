@@ -8,7 +8,7 @@ KIND            := kindest/node:v1.27.3
 # hey -m GET -c 100 -n 10000 http://localhost:3000/v1/test
 # openssl genpkey -algorithm RSA -out private.pem -pkeyopt rsa_keygen_bits:2048
 # openssl rsa -pubout -in private.pem -out public.pem
-
+# dblab --host 0.0.0.0 --user postgres --db postgres --pass postgres --ssl disable --port 5432 --driver postgres
 # ======================================================================================================================
 run:
 	go run app/services/sales-api/main.go
