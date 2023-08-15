@@ -6,8 +6,11 @@ import (
 	"net/url"
 	"time"
 
+	"github.com/google/go-querystring"
+	"github.com/Avyukth/service3-clone/foundation/web"
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
+	"go.uber.org/zap"
 )
 
 var (
@@ -78,3 +81,20 @@ func StatusCheck(ctx context.Context, db *sqlx.DB) error {
 	var tmp bool
 	return db.QueryRowContext(ctx, q).Scan(&tmp)
 }
+
+
+
+func NameExecContext(ctx context.Context, log *zap.SugaredLogger, db *sqlx.DB, query string,  data interface{}) error {
+
+	q := queryString(query, data)
+	log.Infow("database.NameExecContext", "traceid", web.GetTraceID(ctx), "query", q)
+
+	if _, err:= db.ExecContext(ctx, q); err!= nil {
+		return err
+    }
+	return nil
+}
+
+
+
+func
