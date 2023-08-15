@@ -4,8 +4,10 @@ import (
 	"crypto/rand"
 	"crypto/rsa"
 	"testing"
+	"time"
 
 	"github.com/Avyukth/service3-clone/business/sys/auth"
+	"github.com/golang-jwt/jwt/v5"
 )
 
 const (
@@ -31,7 +33,20 @@ func TestAuth(t *testing.T) {
 				t.Fatalf("\t%s\tTest %d:\tShould be able to create authenticator.", failed, testID, err)
 			}
 			t.Logf("\t%s\tTest %d:\tShould be able to create authenticator.", success, testID)
+			claims := auth.Claims{
 
+				jwt.RegisteredClaims{
+					// A usual scenario is to set the expiration time relative to the current time
+					ExpiresAt: jwt.NewNumericDate(time.Now().Add(24 * time.Hour)),
+					IssuedAt:  jwt.NewNumericDate(time.Now()),
+					NotBefore: jwt.NewNumericDate(time.Now()),
+					Issuer:    "service Project",
+					Subject:   "123456789",
+					ID:        "1",
+					Audience:  []string{"somebody_else"},
+				},
+				[]string{"ADMIN"},
+			}
 		}
 	}
 }
