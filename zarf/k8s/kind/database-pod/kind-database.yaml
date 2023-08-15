@@ -38,29 +38,29 @@ spec:
                 configMapKeyRef:
                   name: app-config
                   key: db_password
-              ports:
-                - name: postgres
-                  containerPort: 5432
-              livenessProbe:
-                exec:
-                  command:
-                    - pg_isready
-                    - -h
-                    - localhost
-                    - -U
-                    - postgres
-                initialDelaySeconds: 30
-                timeoutSeconds: 5
-              readinessProbe:
-                exec:
-                  command:
-                    - pg_isready
-                    - -h
-                    - localhost
-                    - -U
-                    - postgres
-                initialDelaySeconds: 5
-                timeoutSeconds: 1
+          ports:
+            - name: postgres
+              containerPort: 5432
+          livenessProbe:
+            exec:
+              command:
+                - pg_isready
+                - -h
+                - localhost
+                - -U
+                - postgres
+            initialDelaySeconds: 30
+            timeoutSeconds: 5
+          readinessProbe:
+            exec:
+              command:
+                - pg_isready
+                - -h
+                - localhost
+                - -U
+                - postgres
+            initialDelaySeconds: 5
+            timeoutSeconds: 1
 ---
 apiVersion: v1
 kind: Service
