@@ -50,8 +50,7 @@ func Open(cfg Config) (*sqlx.DB, error) {
 		Path:     cfg.Name,
 		RawQuery: q.Encode(),
 	}
-	fmt.Println("URL string ......................: ", u.String())
-	// psqlInfo := "host=localhost port=5432 user=postgres password=postgres dbname=postgres sslmode=disable"
+
 	db, err := sqlx.Open("postgres", u.String())
 	if err != nil {
 		return nil, err
@@ -59,23 +58,16 @@ func Open(cfg Config) (*sqlx.DB, error) {
 
 	db.SetMaxIdleConns(cfg.MaxIdleConns)
 	db.SetMaxOpenConns(cfg.MaxOpenConns)
-	fmt.Println("DB connection Successfully Open", db.Stats())
+
 	return db, nil
 }
 
 func StatusCheck(ctx context.Context, db *sqlx.DB) error {
-	var (
-		deadline time.Time
-		ok       bool
-	)
-	if deadline, ok = ctx.Deadline(); !ok {
+	if _, ok := ctx.Deadline(); !ok {
 		var cancel context.CancelFunc
 		ctx, cancel = context.WithTimeout(ctx, time.Second)
 		defer cancel()
 	}
-	currrentTime := time.Now()
-	diff := currrentTime.Sub(deadline)
-	fmt.Println("DB connection StatusCheck deadline .............", deadline, diff)
 
 	var pingError error
 	for attempts := 1; ; attempts++ {
@@ -85,17 +77,11 @@ func StatusCheck(ctx context.Context, db *sqlx.DB) error {
 			break
 		}
 
-		time.Sleep(time.Duration(attempts) * 10 * time.Millisecond)
+		time.Sleep(time.Duration(attempts) * 100 * time.Millisecond)
 
-		// if ctx.Err() != nil {
-		// 	return ctx.Err()
-		// }
-		if err := ctx.Err(); err == context.DeadlineExceeded {
-			return fmt.Errorf("database is unreachable, deadline exceeded after retries, pingError: %w", pingError)
-		} else if err == context.Canceled {
-			return fmt.Errorf("database check was cancelled")
+		if ctx.Err() != nil {
+			return ctx.Err()
 		}
-
 	}
 
 	if ctx.Err() != nil {
