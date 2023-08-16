@@ -14,6 +14,7 @@ import (
 
 	"github.com/Avyukth/service3-clone/app/services/sales-api/handlers"
 	"github.com/Avyukth/service3-clone/business/sys/auth"
+	"github.com/Avyukth/service3-clone/business/sys/database"
 	"github.com/Avyukth/service3-clone/foundation/web/keystore"
 	"github.com/ardanlabs/conf/v3"
 	"go.uber.org/automaxprocs/maxprocs"
@@ -67,6 +68,15 @@ func run(log *zap.SugaredLogger) error {
 			KeysFolder string `conf:"default:zarf/keys/"`
 			ActiveKID  string `conf:"default:133d7df7-d74c-4802-985c-f4a64e696f47"`
 		}
+		DB struct {
+			user         string `conf:"default:postgres"`
+			Password     string `conf:"default:postgres,mask"`
+			Host         string `conf:"default:localhost"`
+			Name         string `conf:"default:postgres"`
+			MaxIdleConns int    `conf:"default:0"`
+			MaxOpenConns int    `conf:"default:0"`
+			DisableTLS   bool   `conf:"default:true"`
+		}
 	}{
 		Version: conf.Version{
 			Build: build,
@@ -116,6 +126,40 @@ func run(log *zap.SugaredLogger) error {
 		return fmt.Errorf("initializing auth: %w", err)
 	}
 
+	// =================================================================================================================
+	// Initialize Database Support
+
+	log.Infow("startup", "status", "Initializing Database Support", "host", cfg.DB.Host)
+
+	db, err := database.Open(database.Config{
+		User:         cfg.DB.user,
+		Password:     cfg.DB.Password,
+		Host:         cfg.DB.Host,
+		Name:         cfg.DB.Name,
+		MaxIdleConns: cfg.DB.MaxIdleConns,
+		MaxOpenConns: cfg.DB.MaxOpenConns,
+		DisableTLS:   cfg.DB.DisableTLS,
+	})
+	if err != nil {
+		return fmt.Errorf("connecting to db: %w", err)
+	}
+
+	defer func() {
+		log.Infow("shutdown", "status", "stopping database support", "host", cfg.DB.Host)
+		db.Close()
+	}()
+
+	// =================================================================================================================
+	// Initialize HTTP Server
+	log.Infow("startup", "status", "Initializing HTTP Server")
+
+	srv := &http.Server{
+		Addr:         cfg.Web.APIHost,
+		ReadTimeout:  cfg.Web.ReadTimeout,
+		WriteTimeout: cfg.Web.WriteTimeout,
+		IdleTimeout:  cfg.Web.IdleTimeout,
+		Handler:      handlers.New(db, auth),
+	}
 	// =================================================================================================================
 	// Starting Debug Service
 
