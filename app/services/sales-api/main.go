@@ -149,18 +149,7 @@ func run(log *zap.SugaredLogger) error {
 		db.Close()
 	}()
 
-	// =================================================================================================================
-	// Initialize HTTP Server
-	log.Infow("startup", "status", "Initializing HTTP Server")
-
-	srv := &http.Server{
-		Addr:         cfg.Web.APIHost,
-		ReadTimeout:  cfg.Web.ReadTimeout,
-		WriteTimeout: cfg.Web.WriteTimeout,
-		IdleTimeout:  cfg.Web.IdleTimeout,
-		Handler:      handlers.New(db, auth),
-	}
-	// =================================================================================================================
+	//=================================================================================================================
 	// Starting Debug Service
 
 	log.Infow("startup", "status", "debug router started", "host", cfg.Web.DebugHost)
