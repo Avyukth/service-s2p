@@ -20,7 +20,7 @@ type Handlers struct {
 
 func (h *Handlers) Readiness(w http.ResponseWriter, r *http.Request) {
 
-	ctx, cancel := context.WithTimeout(r.Context(), time.Second)
+	ctx, cancel := context.WithTimeout(r.Context(), 10*time.Second)
 	defer cancel()
 
 	status := "OK"

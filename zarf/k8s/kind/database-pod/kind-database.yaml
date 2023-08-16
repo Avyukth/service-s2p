@@ -9,11 +9,12 @@ metadata:
   name: database-pod
   namespace: database-system
 spec:
+  replicas: 1
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app: database
-  replicas: 1
-  strategy: {}
   template:
     metadata:
       labels:
@@ -21,17 +22,15 @@ spec:
     spec:
       dnsPolicy: ClusterFirstWithHostNet
       hostNetwork: true
-      restartPolicy: Always
       containers:
         - name: postgres
           image: postgres:latest
           resources:
             limits:
               cpu: 2000m
-              memory: 512Mi
+              memory: 512Mi # Up to 1 full core
             requests:
-              cpu: 1000m
-          imagePullPolicy: Always
+              cpu: 1000m # Use 1 full core
           env:
             - name: POSTGRES_PASSWORD
               valueFrom:
