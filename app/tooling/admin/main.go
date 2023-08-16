@@ -27,6 +27,33 @@ func main() {
 	}
 }
 
+func seed() error {
+	cfg := database.Config{
+		Host:         "localhost",
+		User:         "postgres",
+		Password:     "postgres",
+		Name:         "postgres",
+		MaxIdleConns: 0,
+		MaxOpenConns: 0,
+		DisableTLS:   true,
+	}
+
+	db, err := database.Open(cfg)
+	if err != nil {
+		return fmt.Errorf("failed to connect to database: %w", err)
+	}
+	defer db.Close()
+
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	if err := schema.Seed(ctx, db); err != nil {
+		return fmt.Errorf("failed to migrate database: %w", err)
+	}
+	fmt.Println("database seeding successfully")
+	return nil
+}
+
 func migrate() error {
 
 	cfg := database.Config{
@@ -53,7 +80,7 @@ func migrate() error {
 	}
 	fmt.Println("database migrated successfully")
 
-	return nil
+	return seed()
 }
 
 func genToken() error {
