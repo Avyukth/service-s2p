@@ -5,12 +5,14 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/jmoiron/sqlx"
 	"go.uber.org/zap"
 )
 
 type Handlers struct {
 	Build string
 	Log   *zap.SugaredLogger
+	DB    *sqlx.DB
 }
 
 func (h *Handlers) Readiness(w http.ResponseWriter, r *http.Request) {

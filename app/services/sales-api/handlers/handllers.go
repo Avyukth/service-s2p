@@ -11,6 +11,7 @@ import (
 	"github.com/Avyukth/service3-clone/business/sys/auth"
 	"github.com/Avyukth/service3-clone/business/web/mid"
 	"github.com/Avyukth/service3-clone/foundation/web"
+	"github.com/jmoiron/sqlx"
 	"go.uber.org/zap"
 )
 
@@ -18,6 +19,7 @@ type APIMuxConfig struct {
 	Shutdown chan os.Signal
 	Log      *zap.SugaredLogger
 	Auth     *auth.Auth
+	DB       *sqlx.DB
 }
 
 func DebugStandardLibraryMux() *http.ServeMux {
@@ -31,13 +33,14 @@ func DebugStandardLibraryMux() *http.ServeMux {
 	return mux
 }
 
-func DebugMux(build string, log *zap.SugaredLogger) http.Handler {
+func DebugMux(build string, log *zap.SugaredLogger, db *sqlx.DB) http.Handler {
 
 	mux := DebugStandardLibraryMux()
 
 	cgh := checkgrp.Handlers{
 		Build: build,
 		Log:   log,
+		DB:    db,
 	}
 
 	mux.HandleFunc("/debug/readiness", cgh.Readiness)

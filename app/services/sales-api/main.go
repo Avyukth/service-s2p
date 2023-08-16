@@ -149,12 +149,12 @@ func run(log *zap.SugaredLogger) error {
 		db.Close()
 	}()
 
-	//=================================================================================================================
+	// =================================================================================================================
 	// Starting Debug Service
 
 	log.Infow("startup", "status", "debug router started", "host", cfg.Web.DebugHost)
 
-	debugMux := handlers.DebugMux(build, log)
+	debugMux := handlers.DebugMux(build, log, DB)
 	go func() {
 		if err := http.ListenAndServe(cfg.Web.DebugHost, debugMux); err != nil {
 			log.Errorw("shutdown", "status", "debug router closed", "host", cfg.Web.DebugHost, "ERROR", err)
@@ -171,6 +171,7 @@ func run(log *zap.SugaredLogger) error {
 		Shutdown: shutdown,
 		Log:      log,
 		Auth:     auth,
+		DB:       db,
 	})
 
 	api := http.Server{
