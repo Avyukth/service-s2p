@@ -1,10 +1,13 @@
 package checkgrp
 
 import (
+	"context"
 	"encoding/json"
 	"net/http"
 	"os"
+	"time"
 
+	"github.com/Avyukth/service3-clone/business/sys/database"
 	"github.com/jmoiron/sqlx"
 	"go.uber.org/zap"
 )
@@ -16,12 +19,24 @@ type Handlers struct {
 }
 
 func (h *Handlers) Readiness(w http.ResponseWriter, r *http.Request) {
+
+	ctx, cancel := context.WithTimeout(r.Context(), time.Second)
+	defer cancel()
+
+	status := "OK"
+
+	statusCode := http.StatusOK
+
+	if err := database.StatusCheck(ctx, h.DB); err != nil {
+		status = "db not ready yet"
+		statusCode = http.StatusInternalServerError
+	}
 	data := struct {
 		Status string `json:"status"`
 	}{
-		Status: "OK",
+		Status: status,
 	}
-	statusCode := http.StatusOK
+
 	if err := response(w, statusCode, data); err != nil {
 		h.Log.Errorw("readiness", "ERROR", err)
 	}
