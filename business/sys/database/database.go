@@ -3,12 +3,13 @@ package database
 import (
 	"context"
 	"errors"
+	"fmt"
 	"net/url"
 	"reflect"
+	"strings"
 	"time"
 
 	"github.com/Avyukth/service3-clone/foundation/web"
-	"github.com/google/go-querystring"
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
 	"go.uber.org/zap"
@@ -117,4 +118,28 @@ func NamedQuerySlice(ctx context.Context, log *zap.SugaredLogger, db *sqlx, quer
 		slice.Set(reflect.Append(slice, v.Elem()))
 	}
 	return nil
+}
+
+func queryString(query string, args ...interface{}) string {
+
+	query, params, err := sqlx.Named(query, args)
+	if err != nil {
+		return err.Error()
+	}
+
+	for _, param := range params {
+		var value string
+		switch v := param.(type) {
+		case string:
+			value = fmt.Sprint("%q", v)
+		case []byte:
+			value = fmt.Sprint("%q", string(v))
+
+		default:
+			value = fmt.Sprintf("%v", v)
+		}
+		query = strings.Replace(query, "?", value, 1)
+	}
+
+	return strings.Trim(query, " ")
 }
