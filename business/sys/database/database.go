@@ -121,6 +121,28 @@ func NamedQuerySlice(ctx context.Context, log *zap.SugaredLogger, db *sqlx.DB, q
 	return nil
 }
 
+func NamedQueryStruct(ctx context.Context, log *zap.SugaredLogger, db *sqlx.DB, query string, data interface{}, dest any) error {
+
+	q := queryString(query, data)
+	log.Infow("database.NamedQueryStruct", "traceid", web.GetTraceID(ctx), "query", q)
+
+	rows, err := db.NamedQueryContext(ctx, query, data)
+
+	if err != nil {
+		return err
+	}
+
+	if !rows.Next() {
+		return ErrorNotFound
+	}
+
+	if err := rows.StructScan(dest); err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func queryString(query string, args ...interface{}) string {
 
 	query, params, err := sqlx.Named(query, args)
