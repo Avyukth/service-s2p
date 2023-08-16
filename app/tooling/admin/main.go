@@ -2,20 +2,20 @@ package main
 
 import (
 	"context"
-	"crypto/rand"
-	"crypto/rsa"
-	"crypto/x509"
-	"encoding/pem"
-	"errors"
+	// "crypto/rand"
+	// "crypto/rsa"
+	// "crypto/x509"
+	// "encoding/pem"
+	// "errors"
 	"fmt"
-	"io"
+	// "io"
 	"os"
 	"time"
 
 	"github.com/Avyukth/service3-clone/business/data/schema"
 	"github.com/Avyukth/service3-clone/business/sys/database"
-	"github.com/golang-jwt/jwt/v5"
-	"github.com/google/uuid"
+	// "github.com/golang-jwt/jwt/v5"
+	// "github.com/google/uuid"
 )
 
 func main() {
@@ -82,6 +82,8 @@ func migrate() error {
 
 	return seed()
 }
+
+/*
 
 func genToken() error {
 	//	==================================================================================
@@ -241,3 +243,5 @@ func genPrivateKey() (string, string, error) {
 	// ============================================================================================================================
 
 }
+
+*/
