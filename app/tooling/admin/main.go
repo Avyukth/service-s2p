@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"crypto/rand"
 	"crypto/rsa"
 	"crypto/x509"
@@ -11,16 +12,48 @@ import (
 	"os"
 	"time"
 
+	"github.com/Avyukth/service3-clone/business/data/schema"
+	"github.com/Avyukth/service3-clone/business/sys/database"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/google/uuid"
 )
 
 func main() {
-	err := genToken()
+	// err := genToken()
+	err := migrate()
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
+}
+
+func migrate() error {
+
+	cfg := database.Config{
+		Host:         "localhost",
+		User:         "postgres",
+		Password:     "postgres",
+		Name:         "postgres",
+		MaxIdleConns: 0,
+		MaxOpenConns: 0,
+		DisableTLS:   true,
+	}
+
+	db, err := database.Open(cfg)
+	if err != nil {
+		return fmt.Errorf("failed to connect to database: %w", err)
+	}
+	defer db.Close()
+
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	if err := schema.Migrate(ctx, db); err != nil {
+		return fmt.Errorf("failed to migrate database: %w", err)
+	}
+	fmt.Println("database migrated successfully")
+
+	return nil
 }
 
 func genToken() error {
