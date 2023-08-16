@@ -64,20 +64,29 @@ func Open(cfg Config) (*sqlx.DB, error) {
 func StatusCheck(ctx context.Context, db *sqlx.DB) error {
 	if _, ok := ctx.Deadline(); !ok {
 		var cancel context.CancelFunc
-		ctx, cancel = context.WithTimeout(ctx, time.Second)
+		ctx, cancel = context.WithTimeout(ctx, 10*time.Second)
 		defer cancel()
 	}
 
 	var pingError error
 	for attempts := 1; ; attempts++ {
 		pingError = db.Ping()
+
 		if pingError == nil {
 			break
 		}
+
 		time.Sleep(time.Duration(attempts) * 100 * time.Millisecond)
-		if ctx.Err() != nil {
-			return ctx.Err()
+
+		// if ctx.Err() != nil {
+		// 	return ctx.Err()
+		// }
+		if err := ctx.Err(); err == context.DeadlineExceeded {
+			return fmt.Errorf("database is unreachable, deadline exceeded after retries")
+		} else if err == context.Canceled {
+			return fmt.Errorf("database check was cancelled")
 		}
+
 	}
 
 	if ctx.Err() != nil {
