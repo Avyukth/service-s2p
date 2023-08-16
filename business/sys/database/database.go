@@ -95,10 +95,11 @@ func NameExecContext(ctx context.Context, log *zap.SugaredLogger, db *sqlx.DB, q
 	return nil
 }
 
-func NamedQuerySlice(ctx context.Context, log *zap.SugaredLogger, db *sqlx, query string, data interface{}, dest any) error {
+func NamedQuerySlice(ctx context.Context, log *zap.SugaredLogger, db *sqlx.DB, query string, data interface{}, dest any) error {
 
 	q := queryString(query, data)
 	log.Infow("database.NamedQuerySlice", "traceid", web.GetTraceID(ctx), "query", q)
+
 	val := reflect.ValueOf(dest)
 
 	if val.Kind() != reflect.Ptr || val.Elem().Kind() != reflect.Slice {
@@ -131,15 +132,18 @@ func queryString(query string, args ...interface{}) string {
 		var value string
 		switch v := param.(type) {
 		case string:
-			value = fmt.Sprint("%q", v)
+			value = fmt.Sprintf("%q", v)
 		case []byte:
-			value = fmt.Sprint("%q", string(v))
+			value = fmt.Sprintf("%q", string(v))
 
 		default:
 			value = fmt.Sprintf("%v", v)
 		}
 		query = strings.Replace(query, "?", value, 1)
 	}
+
+	query = strings.Replace(query, "\t", "", 1)
+	query = strings.Replace(query, "\n", "", 1)
 
 	return strings.Trim(query, " ")
 }
