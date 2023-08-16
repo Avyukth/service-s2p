@@ -4,10 +4,11 @@ import (
 	"context"
 	"errors"
 	"net/url"
+	"reflect"
 	"time"
 
-	"github.com/google/go-querystring"
 	"github.com/Avyukth/service3-clone/foundation/web"
+	"github.com/google/go-querystring"
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
 	"go.uber.org/zap"
@@ -82,19 +83,38 @@ func StatusCheck(ctx context.Context, db *sqlx.DB) error {
 	return db.QueryRowContext(ctx, q).Scan(&tmp)
 }
 
-
-
-func NameExecContext(ctx context.Context, log *zap.SugaredLogger, db *sqlx.DB, query string,  data interface{}) error {
+func NameExecContext(ctx context.Context, log *zap.SugaredLogger, db *sqlx.DB, query string, data interface{}, dest interface{}) error {
 
 	q := queryString(query, data)
 	log.Infow("database.NameExecContext", "traceid", web.GetTraceID(ctx), "query", q)
 
-	if _, err:= db.ExecContext(ctx, q); err!= nil {
+	if _, err := db.ExecContext(ctx, q); err != nil {
 		return err
-    }
+	}
 	return nil
 }
 
+func NamedQuerySlice(ctx context.Context, log *zap.SugaredLogger, db *sqlx, query string, data interface{}, dest any) error {
 
+	q := queryString(query, data)
+	log.Infow("database.NamedQuerySlice", "traceid", web.GetTraceID(ctx), "query", q)
+	val := reflect.ValueOf(dest)
 
-func
+	if val.Kind() != reflect.Ptr || val.Elem().Kind() != reflect.Slice {
+		return errors.New("must provide a pointer to a slice")
+	}
+
+	rows, err := db.NamedQueryContext(ctx, query, data)
+	if err != nil {
+		return err
+	}
+	slice := val.Elem()
+	for rows.Next() {
+		v := reflect.New(slice.Type().Elem())
+		if err := rows.StructScan(v.Interface()); err != nil {
+			return err
+		}
+		slice.Set(reflect.Append(slice, v.Elem()))
+	}
+	return nil
+}
