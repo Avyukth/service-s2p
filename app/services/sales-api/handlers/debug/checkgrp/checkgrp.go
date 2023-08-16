@@ -30,7 +30,9 @@ func (h *Handlers) Readiness(w http.ResponseWriter, r *http.Request) {
 	if err := database.StatusCheck(ctx, h.DB); err != nil {
 		status = "db not ready yet"
 		statusCode = http.StatusInternalServerError
+		h.Log.Infow("db not ready yet", "error", err)
 	}
+
 	data := struct {
 		Status string `json:"status"`
 	}{

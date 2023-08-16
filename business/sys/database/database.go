@@ -62,6 +62,12 @@ func Open(cfg Config) (*sqlx.DB, error) {
 }
 
 func StatusCheck(ctx context.Context, db *sqlx.DB) error {
+	if _, ok := ctx.Deadline(); !ok {
+		var cancel context.CancelFunc
+		ctx, cancel = context.WithTimeout(ctx, time.Second)
+		defer cancel()
+	}
+
 	var pingError error
 	for attempts := 1; ; attempts++ {
 		pingError = db.Ping()
@@ -69,7 +75,6 @@ func StatusCheck(ctx context.Context, db *sqlx.DB) error {
 			break
 		}
 		time.Sleep(time.Duration(attempts) * 100 * time.Millisecond)
-
 		if ctx.Err() != nil {
 			return ctx.Err()
 		}
@@ -79,6 +84,8 @@ func StatusCheck(ctx context.Context, db *sqlx.DB) error {
 		return ctx.Err()
 	}
 
+	// Run a simple query to determine connectivity.
+	// Running this query forces a round trip through the database.
 	const q = `SELECT true`
 	var tmp bool
 	return db.QueryRowContext(ctx, q).Scan(&tmp)
