@@ -69,11 +69,11 @@ func run(log *zap.SugaredLogger) error {
 			ActiveKID  string `conf:"default:133d7df7-d74c-4802-985c-f4a64e696f47"`
 		}
 		DB struct {
-			user         string `conf:"default:postgres"`
+			User         string `conf:"default:postgres"`
 			Password     string `conf:"default:postgres,mask"`
 			Host         string `conf:"default:localhost"`
 			Name         string `conf:"default:postgres"`
-			MaxIdleConns int    `conf:"default:0"`
+			MaxIdleConns int    `conf:"default:2"`
 			MaxOpenConns int    `conf:"default:0"`
 			DisableTLS   bool   `conf:"default:true"`
 		}
@@ -132,7 +132,7 @@ func run(log *zap.SugaredLogger) error {
 	log.Infow("startup", "status", "Initializing Database Support", "host", cfg.DB.Host)
 
 	db, err := database.Open(database.Config{
-		User:         cfg.DB.user,
+		User:         cfg.DB.User,
 		Password:     cfg.DB.Password,
 		Host:         cfg.DB.Host,
 		Name:         cfg.DB.Name,

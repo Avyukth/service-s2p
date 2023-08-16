@@ -50,7 +50,8 @@ func Open(cfg Config) (*sqlx.DB, error) {
 		Path:     cfg.Name,
 		RawQuery: q.Encode(),
 	}
-	fmt.Println("URL string ......................: ", url.UserPassword(cfg.User, cfg.Password), u.String())
+	fmt.Println("URL string ......................: ", u.String())
+	// psqlInfo := "host=localhost port=5432 user=postgres password=postgres dbname=postgres sslmode=disable"
 	db, err := sqlx.Open("postgres", u.String())
 	if err != nil {
 		return nil, err
