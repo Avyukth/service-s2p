@@ -134,7 +134,36 @@ func (s Store) Delete(ctx context.Context, claims auth.Claims, userID string) er
 
 func (s Store) QueryByID(ctx context.Context, claims auth.Claims, userID string) (User, error) {
 
-	return User{}, nil
+	if err := validate.Check(userID); err != nil {
+		return User{}, database.ErrInvalidID
+	}
+	if !claims.Authorized(auth.RoleAdmin) && claims.Subject != userID {
+		return User{}, database.ErrForbidden
+	}
+	data := struct {
+		UserID string `db:"user_id"`
+	}{
+		UserID: userID,
+	}
+	const q = `
+	SELECT
+		*
+	FROM
+		users
+	WHERE
+		user_id = :user_id`
+
+	var usr User
+
+	if err := database.NamedQueryStruct(ctx, s.log, s.db, q, data, &usr); err != nil {
+		if err == database.ErrNotFound {
+			return User{}, database.ErrNotFound
+		}
+
+		return User{}, fmt.Errorf("selecting user userID[%s]: %w", userID, err)
+	}
+
+	return usr, nil
 }
 
 func (s Store) Query(ctx context.Context, pageNumber int, rowsPerPage int) ([]User, error) {
@@ -166,4 +195,9 @@ func (s Store) Query(ctx context.Context, pageNumber int, rowsPerPage int) ([]Us
 
 	return users, nil
 
+}
+
+func (s Store) QueryByEmail(ctx context.Context, email string) (User, error) {
+
+	return User{}, nil
 }
