@@ -9,7 +9,7 @@ import (
 )
 
 type Container struct {
-	Id   string
+	ID   string
 	Host string
 }
 
@@ -69,6 +69,18 @@ func StopContainer(t *testing.T, id string) {
 
 }
 
+/*
+"5432/tcp": [
+                    {
+                        "HostIp": "0.0.0.0",
+                        "HostPort": "5432"
+                    }
+            ],
+
+			Extract this information from the output of the docker inspect command
+
+*/
+
 func extractIPPort(t *testing.T, doc []map[string]interface{}, port string) (string, string) {
 
 	nw, exists := doc[0]["NetworkSettings"]
@@ -100,7 +112,7 @@ func extractIPPort(t *testing.T, doc []map[string]interface{}, port string) (str
 		hostPort = data["HostIP"].(string)
 		if hostIP != "::" {
 			hostPort = data["HostPort"].(string)
-			break
+			break // Need to Remove this ??
 		}
 	}
 	return hostIP, hostPort
