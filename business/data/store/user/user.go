@@ -8,6 +8,7 @@ import (
 	"github.com/Avyukth/service3-clone/business/sys/auth"
 	"github.com/Avyukth/service3-clone/business/sys/database"
 	"github.com/Avyukth/service3-clone/business/sys/validate"
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/jmoiron/sqlx"
 	"go.uber.org/zap"
 	"golang.org/x/crypto/bcrypt"
@@ -230,4 +231,48 @@ func (s Store) QueryByEmail(ctx context.Context, claims auth.Claims, email strin
 	}
 
 	return usr, nil
+}
+
+func (s Store) Authenticate(ctx context.Context, now time.Time, email string, password string) (auth.Claims, error) {
+	if err := validate.Email(email); err != nil {
+		return auth.Claims{}, database.ErrInvalidEmail
+	}
+
+	data := struct {
+		Email string `db:"email"`
+	}{
+		Email: email,
+	}
+
+	const q = `
+	SELECT
+		*
+	FROM
+		users
+	WHERE
+	email = :email`
+
+	var usr User
+	if err := database.NamedQueryStruct(ctx, s.log, s.db, q, data, &usr); err != nil {
+		if err == database.ErrNotFound {
+			return auth.Claims{}, database.ErrNotFound
+		}
+		return auth.Claims{}, fmt.Errorf("selecting user[%q]: %w", email, err)
+	}
+
+	if err := bcrypt.CompareHashAndPassword([]byte(usr.PasswordHash), []byte(password)); err != nil {
+		return auth.Claims{}, database.ErrAuthenticationFailure
+	}
+
+	claims := auth.Claims{
+		RegisteredClaims: jwt.RegisteredClaims{
+			Issuer:    "Service Project",
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(24 * time.Hour)),
+			IssuedAt:  jwt.NewNumericDate(time.Now()),
+			NotBefore: jwt.NewNumericDate(time.Now()),
+		},
+		Roles: usr.Roles,
+	}
+
+	return claims, nil
 }
