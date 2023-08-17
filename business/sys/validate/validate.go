@@ -35,6 +35,7 @@ func init() {
 func Check(val interface{}) error {
 
 	if err := validate.Struct(val); err != nil {
+
 		verrors, ok := err.(validator.ValidationErrors)
 		if !ok {
 			return err
@@ -48,8 +49,21 @@ func Check(val interface{}) error {
 			}
 			fields = append(fields, field)
 		}
-		return fields
+
+		return &fields
+
 	}
 
+	return nil
+}
+
+func GenerateID() string {
+	return uuid.NewString()
+}
+
+func CheckID(id string) error {
+	if _, err := uuid.Parse(id); err != nil {
+		return ErrInvalidID
+	}
 	return nil
 }
