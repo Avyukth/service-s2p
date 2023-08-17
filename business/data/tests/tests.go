@@ -59,7 +59,7 @@ func NewUnit(t *testing.T, dbc DBContainer) (*zap.SugaredLogger, *sqlx.DB, func(
 		t.Fatalf("Migrating error: %s", err)
 	}
 
-	if err := schema.Seed(ctx, db); err == nil {
+	if err := schema.Seed(ctx, db); err != nil {
 		docker.DumpContainerLogs(t, c.ID)
 		docker.StopContainer(t, c.ID)
 		t.Fatalf("Seeding error: %s", err)

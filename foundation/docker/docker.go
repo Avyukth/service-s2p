@@ -106,10 +106,11 @@ func extractIPPort(t *testing.T, doc []map[string]interface{}, port string) (str
 
 	for _, l := range list {
 		data, exists := l.(map[string]interface{})
+
 		if !exists {
 			t.Fatal("failed to find network port/tcp list data")
 		}
-		hostPort = data["HostIP"].(string)
+		hostIP = data["HostIp"].(string)
 		if hostIP != "::" {
 			hostPort = data["HostPort"].(string)
 			break // Need to Remove this ??
