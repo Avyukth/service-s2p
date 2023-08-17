@@ -16,7 +16,7 @@ import (
 )
 
 var (
-	ErrorNotFound            = errors.New("not found")
+	ErrNotFound              = errors.New("not found")
 	ErrInvalidID             = errors.New("ID is not in proper form")
 	ErrAuthenticationFailure = errors.New("authentication failed")
 	ErrForbidden             = errors.New("attempt action not allowed")
@@ -100,7 +100,7 @@ func NamedExecContext(ctx context.Context, log *zap.SugaredLogger, db *sqlx.DB, 
 	q := queryString(query, data)
 	log.Infow("database.NameExecContext", "traceid", web.GetTraceID(ctx), "query", q)
 
-	if _, err := db.ExecContext(ctx, q); err != nil {
+	if _, err := db.NamedExecContext(ctx, q, data); err != nil {
 		return err
 	}
 	return nil

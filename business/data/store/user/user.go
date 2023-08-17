@@ -80,7 +80,7 @@ func (s Store) Update(ctx context.Context, claims auth.Claims, userID string, uu
 	}
 
 	if uu.Password != nil {
-		pw, err := bcrypt.GenerateFromPassword([]byte(uu.Password), bcrypt.DefaultCost)
+		pw, err := bcrypt.GenerateFromPassword([]byte(*uu.Password), bcrypt.DefaultCost)
 		if err != nil {
 			return fmt.Errorf("generating password hash: %w", err)
 		}
@@ -132,7 +132,38 @@ func (s Store) Delete(ctx context.Context, claims auth.Claims, userID string) er
 	return nil
 }
 
-func (s Store) QueryByID(ctx context.Context, claims auth.Claims, userID string) error {
+func (s Store) QueryByID(ctx context.Context, claims auth.Claims, userID string) (User, error) {
 
-	return nil
+	return User{}, nil
+}
+
+func (s Store) Query(ctx context.Context, pageNumber int, rowsPerPage int) ([]User, error) {
+
+	data := struct {
+		Offset      int `db:"offset"`
+		RowsPerPage int `db:"rows_per_page"`
+	}{
+		Offset:      (pageNumber - 1) * rowsPerPage,
+		RowsPerPage: rowsPerPage,
+	}
+
+	const q = `
+	SELECT 
+		* 
+	FROM 
+		users 
+	ORDER BY
+		user_id	
+		 OFFSET :offset ROWS FETCH NEXT :rows_per_page ROWS ONLY`
+
+	var users []User
+	if err := database.NamedQuerySlice(ctx, s.log, s.db, q, data, &users); err != nil {
+		if err == database.ErrNotFound {
+			return nil, database.ErrNotFound
+		}
+		return nil, fmt.Errorf("selecting users: %w", err)
+	}
+
+	return users, nil
+
 }
