@@ -1,6 +1,8 @@
 package user
 
 import (
+	"context"
+
 	"github.com/jmoiron/sqlx"
 	"go.uber.org/zap"
 )
@@ -15,4 +17,9 @@ func NewStore(log *zap.SugaredLogger, db *sqlx.DB) *Store {
 		log: log,
 		db:  db,
 	}
+}
+
+func (s Store) Create(ctx context.Context, nu *NewUser) error {
+
+	return nil
 }
