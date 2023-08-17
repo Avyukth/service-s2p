@@ -267,7 +267,7 @@ func (s Store) Authenticate(ctx context.Context, now time.Time, email string, pa
 	claims := auth.Claims{
 		RegisteredClaims: jwt.RegisteredClaims{
 			Issuer:    "Service Project",
-			ExpiresAt: jwt.NewNumericDate(time.Now().Add(24 * time.Hour)),
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Hour)),
 			IssuedAt:  jwt.NewNumericDate(time.Now()),
 			NotBefore: jwt.NewNumericDate(time.Now()),
 		},

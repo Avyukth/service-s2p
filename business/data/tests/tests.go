@@ -19,7 +19,7 @@ import (
 
 const (
 	Success = "\u2713"
-	Failure = "\u2717"
+	Failed  = "\u2717"
 )
 
 type DBContainer struct {
@@ -87,4 +87,12 @@ func NewUnit(t *testing.T, dbc DBContainer) (*zap.SugaredLogger, *sqlx.DB, func(
 	}
 
 	return log, db, teardown
+}
+
+func StringPointer(s string) *string {
+	return &s
+}
+
+func IntPointer(i int) *int {
+	return &i
 }
