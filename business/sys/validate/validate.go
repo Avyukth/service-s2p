@@ -4,6 +4,7 @@ import (
 	"reflect"
 	"strings"
 
+	emv "github.com/AfterShip/email-verifier"
 	"github.com/go-playground/locales/en"
 	ut "github.com/go-playground/universal-translator"
 	"github.com/go-playground/validator/v10"
@@ -53,6 +54,14 @@ func Check(val any) error {
 		return &fields
 	}
 
+	return nil
+}
+
+func Email(email string) error {
+	_, err := emv.NewVerifier().Verify(email)
+	if err != nil {
+		return err
+	}
 	return nil
 }
 

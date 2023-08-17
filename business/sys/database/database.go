@@ -20,6 +20,7 @@ var (
 	ErrInvalidID             = errors.New("ID is not in proper form")
 	ErrAuthenticationFailure = errors.New("authentication failed")
 	ErrForbidden             = errors.New("attempt action not allowed")
+	ErrInvalidEmail          = errors.New("invalid email")
 )
 
 type Config struct {
@@ -144,7 +145,7 @@ func NamedQueryStruct(ctx context.Context, log *zap.SugaredLogger, db *sqlx.DB, 
 	}
 
 	if !rows.Next() {
-		return ErrorNotFound
+		return ErrNotFound
 	}
 
 	if err := rows.StructScan(dest); err != nil {

@@ -89,13 +89,13 @@ func (s Store) Update(ctx context.Context, claims auth.Claims, userID string, uu
 	}
 	usr.DateUpdated = now
 	const q = `
-	UPDATE 
-		users 
-	SET 
-		"name"=:name, 
-		"email"=:email, 
-		"roles"=:roles, 
-		"date_updated"=:date_updated 
+	UPDATE
+		users
+	SET
+		"name"=:name,
+		"email"=:email,
+		"roles"=:roles,
+		"date_updated"=:date_updated
 	WHERE user_id=:user_id`
 	if err := database.NamedExecContext(ctx, s.log, s.db, q, usr); err != nil {
 		return fmt.Errorf("updating user userID[%s]: %w", userID, err)
@@ -120,9 +120,9 @@ func (s Store) Delete(ctx context.Context, claims auth.Claims, userID string) er
 	}
 
 	const q = `
-		DELETE FROM 
-			users 
-		WHERE 
+		DELETE FROM
+			users
+		WHERE
 			user_id=:user_id`
 
 	if err := database.NamedExecContext(ctx, s.log, s.db, q, data); err != nil {
@@ -197,7 +197,37 @@ func (s Store) Query(ctx context.Context, pageNumber int, rowsPerPage int) ([]Us
 
 }
 
-func (s Store) QueryByEmail(ctx context.Context, email string) (User, error) {
+func (s Store) QueryByEmail(ctx context.Context, claims auth.Claims, email string) (User, error) {
 
-	return User{}, nil
+	if err := validate.Email(email); err != nil {
+		return User{}, database.ErrInvalidEmail
+	}
+
+	data := struct {
+		Email string `db:"email"`
+	}{
+		Email: email,
+	}
+
+	const q = `
+    SELECT
+	*
+	FROM
+		users
+	WHERE
+		email = :email`
+
+	var usr User
+	if err := database.NamedQueryStruct(ctx, s.log, s.db, q, data, &usr); err != nil {
+		if err == database.ErrNotFound {
+			return User{}, database.ErrNotFound
+		}
+		return User{}, fmt.Errorf("selecting user email[%s]: %w", email, err)
+	}
+
+	if !claims.Authorized(auth.RoleAdmin) && claims.Subject != usr.ID {
+		return User{}, database.ErrForbidden
+	}
+
+	return usr, nil
 }

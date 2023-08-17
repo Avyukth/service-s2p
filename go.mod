@@ -3,6 +3,7 @@ module github.com/Avyukth/service3-clone
 go 1.20
 
 require (
+	github.com/AfterShip/email-verifier v1.3.3
 	github.com/ardanlabs/conf/v3 v3.1.6
 	github.com/ardanlabs/darwin v1.5.0
 	github.com/dimfeld/httptreemux/v5 v5.5.0
@@ -20,6 +21,7 @@ require (
 
 require (
 	github.com/gabriel-vasile/mimetype v1.4.2 // indirect
+	github.com/hbollon/go-edlib v1.6.0 // indirect
 	github.com/leodido/go-urn v1.2.4 // indirect
 	go.uber.org/atomic v1.11.0 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
