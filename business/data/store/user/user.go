@@ -19,14 +19,14 @@ type Store struct {
 	db  *sqlx.DB
 }
 
-func NewStore(log *zap.SugaredLogger, db *sqlx.DB) *Store {
-	return &Store{
+func NewStore(log *zap.SugaredLogger, db *sqlx.DB) Store {
+	return Store{
 		log: log,
 		db:  db,
 	}
 }
 
-func (s Store) Create(ctx context.Context, nu *NewUser, now time.Time) (User, error) {
+func (s Store) Create(ctx context.Context, nu NewUser, now time.Time) (User, error) {
 
 	if err := validate.Check(nu); err != nil {
 		return User{}, fmt.Errorf("validating data: %w", err)
