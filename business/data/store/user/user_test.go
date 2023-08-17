@@ -36,7 +36,7 @@ func TestUser(t *testing.T) {
 		t.Logf("\t Test %d:\tWhen handling a single User.", testID)
 		{
 			ctx := context.Background()
-			now := time.Date(2023, time.August, 1, 0, 0, 0, 0, time.UTC)
+			now := time.Now().UTC()
 
 			nu := user.NewUser{
 

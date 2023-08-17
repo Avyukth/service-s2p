@@ -36,6 +36,7 @@ CREATE TABLE IF NOT EXISTS sales (
 	quantity     INT,
 	paid         INT,
 	date_created TIMESTAMP,
+  date_updated TIMESTAMP,
 
 	PRIMARY KEY (sale_id),
 	FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
