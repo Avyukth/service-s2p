@@ -44,7 +44,7 @@ func StartContainer(t *testing.T, image string, port string, args ...string) *Co
 	ip, randPort := extractIPPort(t, doc, port)
 
 	c := Container{
-		Id:   id,
+		ID:   id,
 		Host: net.JoinHostPort(ip, randPort),
 	}
 
