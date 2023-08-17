@@ -68,11 +68,51 @@ func (c Core) Query(ctx context.Context, pageNumber int, rowsPerPage int) ([]use
 
 	users, err := c.user.Query(ctx, pageNumber, rowsPerPage)
 	if err != nil {
-		return nil, fmt.Errorf("update user failed: %w", err)
+		return nil, fmt.Errorf("query failed: %w", err)
 	}
 
 	// PERFORM POST BUSINESSES OPERATIONS
 
 	return users, nil
 
+}
+
+func (c Core) QueryById(ctx context.Context, claims auth.Claims, userId string) (user.User, error) {
+	// PERFORM PRE BUSINESSES OPERATIONS
+
+	usr, err := c.user.QueryByID(ctx, claims, userId)
+	if err != nil {
+		return user.User{}, fmt.Errorf("query user by id failed: %w", err)
+	}
+
+	// PERFORM POST BUSINESSES OPERATIONS
+
+	return usr, nil
+
+}
+
+func (c Core) QueryByEmail(ctx context.Context, claims auth.Claims, email string) (user.User, error) {
+	// PERFORM PRE BUSINESSES OPERATIONS
+
+	usr, err := c.user.QueryByEmail(ctx, claims, email)
+	if err != nil {
+		return user.User{}, fmt.Errorf("update user by email failed: %w", err)
+	}
+
+	// PERFORM POST BUSINESSES OPERATIONS
+
+	return usr, nil
+}
+
+func (c Core) Authenticate(ctx context.Context, now time.Time, email string, password string) (auth.Claims, error) {
+	// PERFORM PRE BUSINESSES OPERATIONS
+
+	claims, err := c.user.Authenticate(ctx, now, email, password)
+	if err != nil {
+		return auth.Claims{}, fmt.Errorf("authentication fail: %w", err)
+	}
+
+	// PERFORM POST BUSINESSES OPERATIONS
+
+	return claims, nil
 }
