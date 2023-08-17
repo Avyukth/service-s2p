@@ -95,7 +95,7 @@ func StatusCheck(ctx context.Context, db *sqlx.DB) error {
 	return db.QueryRowContext(ctx, q).Scan(&tmp)
 }
 
-func NameExecContext(ctx context.Context, log *zap.SugaredLogger, db *sqlx.DB, query string, data interface{}, dest interface{}) error {
+func NamedExecContext(ctx context.Context, log *zap.SugaredLogger, db *sqlx.DB, query string, data any) error {
 
 	q := queryString(query, data)
 	log.Infow("database.NameExecContext", "traceid", web.GetTraceID(ctx), "query", q)
