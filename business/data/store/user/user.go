@@ -148,13 +148,13 @@ func (s Store) Query(ctx context.Context, pageNumber int, rowsPerPage int) ([]Us
 	}
 
 	const q = `
-	SELECT 
-		* 
-	FROM 
-		users 
+	SELECT
+		*
+	FROM
+		users
 	ORDER BY
-		user_id	
-		 OFFSET :offset ROWS FETCH NEXT :rows_per_page ROWS ONLY`
+		user_id
+	OFFSET :offset ROWS FETCH NEXT :rows_per_page ROWS ONLY`
 
 	var users []User
 	if err := database.NamedQuerySlice(ctx, s.log, s.db, q, data, &users); err != nil {
