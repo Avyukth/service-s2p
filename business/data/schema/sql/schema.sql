@@ -1,6 +1,6 @@
 -- Version: 1.1
 -- Description: Create table users
-CREATE TABLE users (
+CREATE TABLE IF NOT EXISTS users (
 	user_id       UUID,
 	name          TEXT,
 	email         TEXT UNIQUE,
@@ -14,7 +14,7 @@ CREATE TABLE users (
 
 -- Version: 1.2
 -- Description: Create table products
-CREATE TABLE products (
+CREATE TABLE IF NOT EXISTS products (
 	product_id   UUID,
 	name         TEXT,
 	cost         INT,
@@ -29,7 +29,7 @@ CREATE TABLE products (
 
 -- Version: 1.3
 -- Description: Create table sales
-CREATE TABLE sales (
+CREATE TABLE IF NOT EXISTS sales (
 	sale_id      UUID,
 	user_id      UUID,
 	product_id   UUID,
