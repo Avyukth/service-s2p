@@ -32,10 +32,10 @@ func init() {
 	})
 }
 
-func Check(val interface{}) error {
-
+func Check(val any) error {
 	if err := validate.Struct(val); err != nil {
 
+		// Use a type assertion to get the real error value.
 		verrors, ok := err.(validator.ValidationErrors)
 		if !ok {
 			return err
@@ -51,7 +51,6 @@ func Check(val interface{}) error {
 		}
 
 		return &fields
-
 	}
 
 	return nil
