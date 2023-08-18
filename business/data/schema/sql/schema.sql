@@ -4,10 +4,10 @@ CREATE TABLE IF NOT EXISTS users (
 	user_id       UUID,
 	name          TEXT,
 	email         TEXT UNIQUE,
-	roles         TEXT[],
+	roles         TEXT,
 	password_hash TEXT,
-	date_created  TIMESTAMP,
-	date_updated  TIMESTAMP,
+	date_created  TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+	date_updated  TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
 
 	PRIMARY KEY (user_id)
 );

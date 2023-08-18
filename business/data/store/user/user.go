@@ -3,6 +3,7 @@ package user
 import (
 	"context"
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/Avyukth/service3-clone/business/sys/auth"
@@ -43,15 +44,15 @@ func (s Store) Create(ctx context.Context, nu NewUser, now time.Time) (User, err
 		Name:         nu.Name,
 		Email:        nu.Email,
 		PasswordHash: hash,
-		Roles:        nu.Roles,
-		DateCreated:  now,
-		DateUpdated:  now,
+		Roles:        convToString(nu.Roles),
+		// DateCreated:  now,
+		// DateUpdated:  now,
 	}
 	const q = `
 	INSERT INTO users
-		(user_id, name, email, password_hash, roles, date_created, date_updated)
+		(user_id, name, email, password_hash, roles)
 	VALUES
-		(:user_id, :name, :email, :password_hash, :roles, :date_created, :date_updated)`
+		(:user_id, :name, :email, :password_hash, :roles)`
 
 	if err := database.NamedExecContext(ctx, s.log, s.db, q, usr); err != nil {
 		return User{}, fmt.Errorf("inserting user: %w", err)
@@ -81,7 +82,7 @@ func (s Store) Update(ctx context.Context, claims auth.Claims, userID string, uu
 		usr.Email = *uu.Email
 	}
 	if uu.Roles != nil {
-		usr.Roles = uu.Roles
+		usr.Roles = convToString(uu.Roles)
 	}
 
 	if uu.Password != nil {
@@ -268,6 +269,11 @@ func (s Store) Authenticate(ctx context.Context, now time.Time, email string, pa
 		return auth.Claims{}, database.ErrAuthenticationFailure
 	}
 
+	roles, err := convToRoles(usr.Roles)
+	if err != nil {
+		return auth.Claims{}, err
+	}
+
 	claims := auth.Claims{
 		RegisteredClaims: jwt.RegisteredClaims{
 			Issuer:    "Service Project",
@@ -275,8 +281,34 @@ func (s Store) Authenticate(ctx context.Context, now time.Time, email string, pa
 			IssuedAt:  jwt.NewNumericDate(time.Now()),
 			NotBefore: jwt.NewNumericDate(time.Now()),
 		},
-		Roles: usr.Roles,
+		Roles: roles,
 	}
 
 	return claims, nil
+}
+
+func convToString(uRoles []auth.Role) string {
+	roles := make([]string, len(uRoles))
+	rStr := ""
+	for i, role := range uRoles {
+		roles[i] = role.Name()
+	}
+	rStr = strings.Join(roles, ", ")
+
+	return rStr
+}
+
+func convToRoles(rStr string) ([]auth.Role, error) {
+	roleNames := strings.Split(rStr, ",")
+	roles := make([]auth.Role, len(roleNames))
+
+	for i, roleName := range roleNames {
+		role, err := auth.ParseRole(strings.TrimSpace(roleName))
+		if err != nil {
+			return nil, err // or handle the error in another way if you prefer
+		}
+		roles[i] = role
+	}
+
+	return roles, nil
 }
