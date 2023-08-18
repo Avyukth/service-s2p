@@ -74,7 +74,7 @@ func NewUnit(t *testing.T, dbc DBContainer) (*zap.SugaredLogger, *sqlx.DB, func(
 
 		t.Helper()
 		deleteDB(t, ctx, db)
-		schema.DeleteALl(ctx, db)
+		schema.DeleteAll(ctx, db)
 		docker.StopContainer(t, c.ID)
 		log.Sync()
 
