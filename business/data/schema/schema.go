@@ -2,7 +2,9 @@ package schema
 
 import (
 	"context"
+	"database/sql"
 	_ "embed"
+	"errors"
 	"fmt"
 
 	"github.com/Avyukth/service3-clone/business/sys/database"
@@ -71,4 +73,33 @@ func Seed(ctx context.Context, db *sqlx.DB) error {
 		return err
 	}
 	return tx.Commit()
+}
+
+func DeleteAll(ctx context.Context, db *sqlx.DB) error {
+	if err := database.StatusCheck(ctx, db); err != nil {
+		return fmt.Errorf("status check database error: %w", err)
+	}
+
+	tx, err := db.Begin()
+	if err != nil {
+		return err
+	}
+	defer func() {
+
+		if errTx := tx.Rollback(); errTx != nil {
+			if errors.Is(errTx, sql.ErrTxDone) {
+				return
+			}
+			err = fmt.Errorf("rollback error: %w", errTx)
+			return
+		}
+	}()
+
+	if _, err := tx.Exec(deleteDoc); err != nil {
+		return fmt.Errorf("exec delete error: %w", err)
+	}
+	if err := tx.Commit(); err != nil {
+		return fmt.Errorf("commit error: %w", err)
+	}
+	return nil
 }
