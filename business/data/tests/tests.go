@@ -73,8 +73,6 @@ func NewUnit(t *testing.T, dbc DBContainer) (*zap.SugaredLogger, *sqlx.DB, func(
 	teardown := func() {
 
 		t.Helper()
-		deleteDB(t, ctx, db)
-		schema.DeleteAll(ctx, db)
 		docker.StopContainer(t, c.ID)
 		log.Sync()
 
@@ -99,6 +97,7 @@ func IntPointer(i int) *int {
 	return &i
 }
 
+// May be removed in the future
 func deleteDB(t *testing.T, ctx context.Context, db *sqlx.DB) error {
 	if err := schema.Seed(ctx, db); err != nil {
 		t.Logf("Deleting error: %s", err)
