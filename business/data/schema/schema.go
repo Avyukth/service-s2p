@@ -38,23 +38,6 @@ func Migrate(ctx context.Context, db *sqlx.DB) error {
 	return d.Migrate()
 }
 
-func DeleteALl(ctx context.Context, db *sqlx.DB) error {
-
-	tx, err := db.Begin()
-	if err != nil {
-		return err
-	}
-
-	if _, err := tx.Exec(deleteDoc); err != nil {
-		if err := tx.Rollback(); err != nil {
-			return err
-		}
-		return err
-	}
-
-	return tx.Commit()
-}
-
 func Seed(ctx context.Context, db *sqlx.DB) error {
 
 	if err := database.StatusCheck(ctx, db); err != nil {
