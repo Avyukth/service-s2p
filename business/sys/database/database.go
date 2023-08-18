@@ -155,8 +155,7 @@ func NamedQueryStruct(ctx context.Context, log *zap.SugaredLogger, db *sqlx.DB, 
 	return nil
 }
 
-func queryString(query string, args ...interface{}) string {
-
+func queryString(query string, args any) string {
 	query, params, err := sqlx.Named(query, args)
 	if err != nil {
 		return err.Error()
@@ -166,10 +165,9 @@ func queryString(query string, args ...interface{}) string {
 		var value string
 		switch v := param.(type) {
 		case string:
-			value = fmt.Sprintf("%q", v)
+			value = fmt.Sprintf("'%s'", v)
 		case []byte:
-			value = fmt.Sprintf("%q", string(v))
-
+			value = fmt.Sprintf("'%s'", string(v))
 		default:
 			value = fmt.Sprintf("%v", v)
 		}
@@ -177,7 +175,7 @@ func queryString(query string, args ...interface{}) string {
 	}
 
 	query = strings.ReplaceAll(query, "\t", "")
-	query = strings.ReplaceAll(query, "\n", "")
+	query = strings.ReplaceAll(query, "\n", " ")
 
 	return strings.Trim(query, " ")
 }
