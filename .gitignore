@@ -4,3 +4,4 @@ service3-clone
 app/services/sales-api/sales-api
 app/services/sales-api/service3-clone
 *.pem
+/.vscode

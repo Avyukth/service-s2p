@@ -139,7 +139,7 @@ func (s Store) Delete(ctx context.Context, claims auth.Claims, userID string) er
 
 func (s Store) QueryByID(ctx context.Context, claims auth.Claims, userID string) (User, error) {
 
-	if err := validate.Check(userID); err != nil {
+	if err := validate.CheckID(userID); err != nil {
 		return User{}, database.ErrInvalidID
 	}
 	if !claims.Authorized(auth.RoleAdmin) && claims.Subject != userID {
