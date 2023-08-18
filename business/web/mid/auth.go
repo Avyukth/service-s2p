@@ -41,7 +41,7 @@ func Authenticate(a *auth.Auth) web.Middleware {
 	return m
 }
 
-func Authorize(roles ...string) web.Middleware {
+func Authorize(roles ...auth.Role) web.Middleware {
 	m := func(handler web.Handler) web.Handler {
 		h := func(ctx context.Context, w http.ResponseWriter, r *http.Request) error {
 

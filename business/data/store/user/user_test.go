@@ -42,7 +42,7 @@ func TestUser(t *testing.T) {
 
 				Name:            "Subhrajit",
 				Email:           "subharajit@subhrajit.me",
-				Roles:           []string{auth.RoleAdmin},
+				Roles:           []auth.Role{auth.RoleAdmin},
 				Password:        "gophers",
 				PasswordConfirm: "gophers",
 			}
@@ -66,7 +66,7 @@ func TestUser(t *testing.T) {
 					ID:        jwtId,
 					Audience:  []string{"https://subhrajit.eth"},
 				},
-				Roles: []string{auth.RoleUser},
+				Roles: []auth.Role{auth.RoleUser},
 			}
 
 			saved, err := store.QueryByID(ctx, claims, usr.ID)
@@ -92,7 +92,7 @@ func TestUser(t *testing.T) {
 					IssuedAt:  jwt.NewNumericDate(time.Now()),
 					Issuer:    "service project",
 				},
-				Roles: []string{auth.RoleAdmin},
+				Roles: []auth.Role{auth.RoleAdmin},
 			}
 			if err := store.Update(ctx, claims, usr.ID, upd, now); err != nil {
 				t.Fatalf("\t%s\tTest %d:\tShould be able to update user: %s.", tests.Failed, testID, err)

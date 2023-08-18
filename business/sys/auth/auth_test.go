@@ -44,7 +44,7 @@ func TestAuth(t *testing.T) {
 					ID:        "1",
 					Audience:  []string{"somebody_else"},
 				},
-				[]string{auth.RoleAdmin},
+				[]auth.Role{auth.RoleAdmin},
 			}
 			token, err := a.GenerateToken(claims)
 			if err != nil {

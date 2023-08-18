@@ -3,21 +3,15 @@ package auth
 import (
 	"context"
 	"errors"
-
 	"github.com/golang-jwt/jwt/v5"
-)
-
-const (
-	RoleAdmin = "ADMIN"
-	RoleUser  = "USER"
 )
 
 type Claims struct {
 	jwt.RegisteredClaims `json:"registered"`
-	Roles                []string `json:"roles"`
+	Roles                []Role `json:"roles"`
 }
 
-func (c Claims) Authorized(roles ...string) bool {
+func (c Claims) Authorized(roles ...Role) bool {
 	for _, has := range c.Roles {
 		for _, want := range roles {
 			if has == want {
