@@ -61,7 +61,7 @@ func (s Store) Create(ctx context.Context, nu NewUser, now time.Time) (User, err
 
 func (s Store) Update(ctx context.Context, claims auth.Claims, userID string, uu UpdateUser, now time.Time) error {
 
-	if err := validate.Check(userID); err != nil {
+	if err := validate.CheckID(userID); err != nil {
 		return database.ErrInvalidID
 	}
 
@@ -110,7 +110,7 @@ func (s Store) Update(ctx context.Context, claims auth.Claims, userID string, uu
 
 func (s Store) Delete(ctx context.Context, claims auth.Claims, userID string) error {
 
-	if err := validate.Check(userID); err != nil {
+	if err := validate.CheckID(userID); err != nil {
 		return database.ErrInvalidID
 	}
 
