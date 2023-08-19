@@ -106,7 +106,7 @@ func NewIntegration(t *testing.T, dbc DBContainer) *Test {
 
 	log, db, teardown := NewUnit(t, dbc)
 
-	keyID := ""
+	keyID := "133d7df7-d74c-4802-985c-f4a64e696f47"
 
 	privateKey, err := rsa.GenerateKey(rand.Reader, 2048)
 	if err != nil {
