@@ -78,4 +78,5 @@ func v1(app *web.App, cfg APIMuxConfig) {
 		User: userCore.NewCore(cfg.Log, cfg.DB),
 		Auth: cfg.Auth,
 	}
+	app.Handle(http.MethodGet, version, "/users", ugh.Users)
 }
