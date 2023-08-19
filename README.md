@@ -18,6 +18,19 @@ Create a robust Golang service, deploy it using Docker and Kubernetes, and enhan
 - [Commands](#commands)
 - [Module Vendor Support](#module-vendor-support)
 
+## Things Covered
+
+- [x] Packaged using Kubernetes
+- [x] Dockerized
+- [x] Middleware with JWT authentication
+- [x] Logging with Zap logger
+- [x] Onion Architecture
+- [x] sqlx used as Database ORM with PostgreSQL
+- [x] Unit testing
+- [x] Integration testing
+- [x] Microservice architecture
+- [x] OpenTelemetry for tracing
+
 ## Introduction
 
 <!-- Provide a brief overview of the project, its purpose, and its key features. -->
