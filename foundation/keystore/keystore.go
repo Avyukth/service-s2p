@@ -36,7 +36,7 @@ func NewFs(fsys fs.FS) (*KeyStore, error) {
 	}
 	fn := func(fileName string, dirEntry fs.DirEntry, err error) error {
 		if err != nil {
-			return err
+			return fmt.Errorf("walk directory failure: %w", err)
 		}
 		if dirEntry.IsDir() {
 			return nil
