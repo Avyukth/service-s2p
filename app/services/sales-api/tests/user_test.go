@@ -1,8 +1,8 @@
 package tests
 
 import (
-	"fmt"
 	"net/http"
+	"net/http/httptest"
 	"os"
 	"testing"
 
@@ -37,7 +37,18 @@ func TestUsers(t *testing.T) {
 			Auth:     test.Auth,
 			DB:       test.DB,
 		}),
-		userToken:  test.Token("user4@example.com", "helloworld"),
-		adminToken: test.Token("user3@example.com", "helloservice"),
+		userToken:  test.Token("user@example.com", "helloworld"),
+		adminToken: test.Token("admin@example.com", "helloservice"),
 	}
+
+	t.Run("getToken200", tests.getToken200)
+}
+
+func (ut *UserTests) getToken200(t *testing.T) {
+	r := httptest.NewRequest(http.MethodGet, "/v1/users/token", nil)
+	w := httptest.NewRecorder()
+
+	r.SetBasicAuth("admin@example.com", "helloworld")
+	ut.app.ServeHTTP(w, r)
+
 }
