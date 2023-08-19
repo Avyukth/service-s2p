@@ -27,9 +27,9 @@ Create a robust Golang service, deploy it using Docker and Kubernetes, and enhan
 - [x] Onion Architecture
 - [x] sqlx used as Database ORM with PostgreSQL
 - [x] Unit testing
-- [x] Integration testing
+- [] Integration testing
 - [x] Microservice architecture
-- [x] OpenTelemetry for tracing
+- [] OpenTelemetry for tracing
 
 ## Introduction
 
