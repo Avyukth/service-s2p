@@ -23,8 +23,8 @@ CREATE TABLE IF NOT EXISTS products (
 	date_created TIMESTAMP,
 	date_updated TIMESTAMP,
 
-	PRIMARY KEY (product_id),
-	FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+	PRIMARY KEY (product_id)
+	-- FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
 
 -- Version: 1.3
@@ -38,7 +38,7 @@ CREATE TABLE IF NOT EXISTS sales (
 	date_created TIMESTAMP,
   date_updated TIMESTAMP,
 
-	PRIMARY KEY (sale_id),
-	FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
-	FOREIGN KEY (product_id) REFERENCES products(product_id) ON DELETE CASCADE
+	PRIMARY KEY (sale_id)
+	-- FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+	-- FOREIGN KEY (product_id) REFERENCES products(product_id) ON DELETE CASCADE
 );

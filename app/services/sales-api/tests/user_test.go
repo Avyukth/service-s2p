@@ -37,8 +37,8 @@ func TestUsers(t *testing.T) {
 			Auth:     test.Auth,
 			DB:       test.DB,
 		}),
-		userToken:  test.Token("user@example.com", "helloworld"),
-		adminToken: test.Token("admin@example.com", "helloservice"),
+		userToken:  test.Token("user@example.com", "hellogopher"),
+		adminToken: test.Token("admin@example.com", "hellogopher"),
 	}
 
 	t.Run("getToken200", tests.getToken200)
