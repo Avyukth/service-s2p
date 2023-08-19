@@ -24,11 +24,11 @@ Create a robust Golang service, deploy it using Docker and Kubernetes, and enhan
 - [x] Dockerized
 - [x] Middleware with JWT authentication
 - [x] Logging with Zap logger
-- [x] Onion Architecture
+- [x] Microservice architecture
+- [x] Onion Layering
 - [x] sqlx used as Database ORM with PostgreSQL
 - [x] Unit testing
 - [] Integration testing
-- [x] Microservice architecture
 - [] OpenTelemetry for tracing
 
 ## Introduction
