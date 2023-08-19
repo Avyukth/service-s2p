@@ -12,26 +12,26 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
-type Keystore struct {
+type KeyStore struct {
 	mu    sync.RWMutex
 	store map[string]*rsa.PrivateKey
 }
 
-func New() *Keystore {
-	return &Keystore{
+func New() *KeyStore {
+	return &KeyStore{
 		store: make(map[string]*rsa.PrivateKey),
 	}
 }
 
-func NewMap(store map[string]*rsa.PrivateKey) *Keystore {
-	return &Keystore{
+func NewMap(store map[string]*rsa.PrivateKey) *KeyStore {
+	return &KeyStore{
 		store: store,
 	}
 }
 
-func NewFs(fsys fs.FS) (*Keystore, error) {
+func NewFs(fsys fs.FS) (*KeyStore, error) {
 
-	ks := Keystore{
+	ks := KeyStore{
 		store: make(map[string]*rsa.PrivateKey),
 	}
 	fn := func(fileName string, dirEntry fs.DirEntry, err error) error {
@@ -74,19 +74,19 @@ func NewFs(fsys fs.FS) (*Keystore, error) {
 
 }
 
-func (ks *Keystore) Add(privateKey *rsa.PrivateKey, kid string) {
+func (ks *KeyStore) Add(privateKey *rsa.PrivateKey, kid string) {
 	ks.mu.Lock()
 	defer ks.mu.Unlock()
 	ks.store[kid] = privateKey
 }
 
-func (ks *Keystore) Remove(kid string) {
+func (ks *KeyStore) Remove(kid string) {
 	ks.mu.Lock()
 	defer ks.mu.Unlock()
 	delete(ks.store, kid)
 }
 
-func (ks *Keystore) PrivateKey(kid string) (*rsa.PrivateKey, error) {
+func (ks *KeyStore) PrivateKey(kid string) (*rsa.PrivateKey, error) {
 	ks.mu.Lock()
 	defer ks.mu.Unlock()
 	privateKey, found := ks.store[kid]
@@ -97,7 +97,7 @@ func (ks *Keystore) PrivateKey(kid string) (*rsa.PrivateKey, error) {
 	return privateKey, nil
 }
 
-func (ks *Keystore) PublicKey(kid string) (*rsa.PublicKey, error) {
+func (ks *KeyStore) PublicKey(kid string) (*rsa.PublicKey, error) {
 	ks.mu.Lock()
 	defer ks.mu.Unlock()
 	privateKey, found := ks.store[kid]
