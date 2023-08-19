@@ -3,6 +3,8 @@ package tests
 import (
 	"bytes"
 	"context"
+	"crypto/rand"
+	"crypto/rsa"
 	"fmt"
 	"io"
 	"os"
@@ -10,8 +12,11 @@ import (
 	"time"
 
 	"github.com/Avyukth/service3-clone/business/data/schema"
+	"github.com/Avyukth/service3-clone/business/data/store/user"
+	"github.com/Avyukth/service3-clone/business/sys/auth"
 	"github.com/Avyukth/service3-clone/business/sys/database"
 	"github.com/Avyukth/service3-clone/foundation/docker"
+	"github.com/Avyukth/service3-clone/foundation/keystore"
 	"github.com/Avyukth/service3-clone/foundation/logger"
 	"github.com/jmoiron/sqlx"
 	"go.uber.org/zap"
@@ -87,6 +92,57 @@ func NewUnit(t *testing.T, dbc DBContainer) (*zap.SugaredLogger, *sqlx.DB, func(
 	}
 
 	return log, db, teardown
+}
+
+type Test struct {
+	DB       *sqlx.DB
+	Log      *zap.SugaredLogger
+	Auth     *auth.Auth
+	t        *testing.T
+	Teardown func()
+}
+
+func NewIntegration(t *testing.T, dbc DBContainer) *Test {
+
+	log, db, teardown := NewUnit(t, dbc)
+
+	keyID := ""
+
+	privateKey, err := rsa.GenerateKey(rand.Reader, 2048)
+	if err != nil {
+		t.Fatalf("Generating private key: %s", err)
+	}
+
+	auth, err := auth.New(keyID, keystore.NewMap(map[string]*rsa.PrivateKey{keyID: privateKey}))
+	if err != nil {
+		t.Fatalf("Auth error: %s", err)
+	}
+
+	test := Test{
+		DB:       db,
+		Log:      log,
+		Auth:     auth,
+		t:        t,
+		Teardown: teardown,
+	}
+	return &test
+}
+
+func (test *Test) Token(email, pass string) string {
+
+	test.t.Log("Generating token for tests ...")
+
+	store := user.NewStore(test.Log, test.DB)
+	claims, err := store.Authenticate(context.Background(), time.Now(), email, pass)
+	if err != nil {
+		test.t.Fatalf("Authenticating error: %s", err)
+	}
+	token, err := test.Auth.GenerateToken(claims)
+	if err != nil {
+		test.t.Fatalf("Generating token error: %s", err)
+	}
+
+	return token
 }
 
 func StringPointer(s string) *string {

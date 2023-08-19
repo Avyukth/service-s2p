@@ -3,8 +3,8 @@ INSERT INTO users (user_id, name, email, roles, password_hash, date_created, dat
 	('a1f37266-1111-4006-984f-9325122678a1', 'Admin Gopher', 'admin@example.com', '{ADMIN,USER}', '$2a$10$1ggfMVZV6Js0ybvJufLRUOWHS5f6KneuP0XwwHpJ8L8ipdry9f2/a', CURRENT_DATE, CURRENT_DATE),
 	('b2e48272-2222-4106-888f-9325122678b2', 'User Gopher1', 'user1@example.com', '{USER}', '$2a$10$9/XASPKBbJKVfCAZKDH.UuhsuALDr5vVm6VrYA9VFR8rccK86C1hW', CURRENT_DATE, CURRENT_DATE),
 	('c3d59378-3333-4206-777f-9325122678c3', 'User Gopher2', 'user2@example.com', '{USER}', '$2a$10$9/XASPKBbJKVfCAZKDH.UuhsuALDr5vVm6VrYA9VFR8rccK86C1hW', CURRENT_DATE, CURRENT_DATE),
-	('d4c60484-4444-4306-666f-9325122678d4', 'User Gopher3', 'user3@example.com', '{USER}', '$2a$10$9/XASPKBbJKVfCAZKDH.UuhsuALDr5vVm6VrYA9VFR8rccK86C1hW', CURRENT_DATE, CURRENT_DATE),
-	('e5b71590-5555-4406-555f-9325122678e5', 'User Gopher4', 'user4@example.com', '{USER}', '$2a$10$9/XASPKBbJKVfCAZKDH.UuhsuALDr5vVm6VrYA9VFR8rccK86C1hW', CURRENT_DATE, CURRENT_DATE)
+	('d4c60484-4444-4306-666f-9325122678d4', 'User Gopher3', 'user3@example.com', '{USER}', '$2a$12$PZqkOdQXsvcaRlv8snnP.eu45SpDC8bp1q0kCmVnzZiUkAhxwh.ra', CURRENT_DATE, CURRENT_DATE),
+	('e5b71590-5555-4406-555f-9325122678e5', 'User Gopher4', 'user4@example.com', '{USER}', '$2a$12$XoK/5C2FxIBEwc4yE1sNY.G5F0/rK1gFAz2MtBvCswALUzMBzfkn2', CURRENT_DATE, CURRENT_DATE)
 ON CONFLICT DO NOTHING;
 
 -- Seed data for products
