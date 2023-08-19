@@ -31,9 +31,7 @@ func NewMap(store map[string]*rsa.PrivateKey) *KeyStore {
 
 func NewFs(fsys fs.FS) (*KeyStore, error) {
 
-	ks := KeyStore{
-		store: make(map[string]*rsa.PrivateKey),
-	}
+	ks := New()
 	fn := func(fileName string, dirEntry fs.DirEntry, err error) error {
 		if err != nil {
 			return fmt.Errorf("walk directory failure: %w", err)
@@ -70,7 +68,7 @@ func NewFs(fsys fs.FS) (*KeyStore, error) {
 		return nil, fmt.Errorf("walking directory: %w", err)
 	}
 
-	return &ks, nil
+	return ks, nil
 
 }
 
