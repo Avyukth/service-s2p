@@ -6,8 +6,10 @@ import (
 	"net/http/pprof"
 	"os"
 
-	"github.com/Avyukth/service3-clone/app/services/sales-api/handlers/debug/checkgrp"
-	"github.com/Avyukth/service3-clone/app/services/sales-api/handlers/v1/testgrp"
+	v1CheckGrp "github.com/Avyukth/service3-clone/app/services/sales-api/handlers/debug/checkgrp"
+	v1TestGrp "github.com/Avyukth/service3-clone/app/services/sales-api/handlers/v1/testgrp"
+	v1UserGrp "github.com/Avyukth/service3-clone/app/services/sales-api/handlers/v1/usergrp"
+	userCore "github.com/Avyukth/service3-clone/business/core/user"
 	"github.com/Avyukth/service3-clone/business/sys/auth"
 	"github.com/Avyukth/service3-clone/business/web/mid"
 	"github.com/Avyukth/service3-clone/foundation/web"
@@ -37,7 +39,7 @@ func DebugMux(build string, log *zap.SugaredLogger, db *sqlx.DB) http.Handler {
 
 	mux := DebugStandardLibraryMux()
 
-	cgh := checkgrp.Handlers{
+	cgh := v1CheckGrp.Handlers{
 		Build: build,
 		Log:   log,
 		DB:    db,
@@ -65,10 +67,15 @@ func APIMux(cfg APIMuxConfig) *web.App {
 func v1(app *web.App, cfg APIMuxConfig) {
 
 	const version = "v1"
-	tgh := testgrp.Handlers{
+	tgh := v1TestGrp.Handlers{
 		Log: cfg.Log,
 	}
 
 	app.Handle(http.MethodGet, version, "/test", tgh.Test)
 	app.Handle(http.MethodGet, version, "/testauth", tgh.Test, mid.Authenticate(cfg.Auth), mid.Authorize(auth.RoleAdmin))
+
+	ugh := v1UserGrp.Handlers{
+		User: userCore.NewCore(cfg.Log, cfg.DB),
+		Auth: cfg.Auth,
+	}
 }
