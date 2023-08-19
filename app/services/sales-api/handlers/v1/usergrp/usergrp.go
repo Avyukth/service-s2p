@@ -8,6 +8,7 @@ import (
 	"strconv"
 
 	userCore "github.com/Avyukth/service3-clone/business/core/user"
+	"github.com/Avyukth/service3-clone/business/data/store/user"
 	"github.com/Avyukth/service3-clone/business/sys/auth"
 	"github.com/Avyukth/service3-clone/business/sys/database"
 	"github.com/Avyukth/service3-clone/business/sys/validate"
@@ -67,4 +68,24 @@ func (h Handlers) QueryByID(ctx context.Context, w http.ResponseWriter, r *http.
 	}
 
 	return web.Respond(ctx, w, usr, http.StatusOK)
+}
+
+func (h Handlers) Create(ctx context.Context, w http.ResponseWriter, r *http.Request) error {
+
+	v, err := web.GetValues(ctx)
+	if err != nil {
+		return web.NewShutdownError("web value missing from context")
+	}
+
+	var nu user.NewUser
+
+	if err := web.Decode(r, &nu); err != nil {
+		return fmt.Errorf("unable to decode payload: %w", err)
+	}
+	usr, err := h.User.Create(ctx, nu, v.Now)
+	if err != nil {
+		return fmt.Errorf("unable to create user[%+v]: %w", &usr, err)
+	}
+
+	return web.Respond(ctx, w, usr, http.StatusCreated)
 }
