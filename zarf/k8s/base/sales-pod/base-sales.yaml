@@ -25,6 +25,9 @@ spec:
           image: sales-api-image
           command: ["./admin"]
       containers:
+        - name: grafana
+          image: grafana/grafana:9.5.8
+          imagePullPolicy: IfNotPresent
         - name: sales-api
           image: sales-api-image
           ports:
@@ -88,3 +91,6 @@ spec:
     - name: sales-api-debug
       port: 4000
       targetPort: sales-api-debug
+    - name: http-grafana
+      port: 9411
+      targetPort: http-grafana
