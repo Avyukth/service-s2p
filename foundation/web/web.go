@@ -2,20 +2,14 @@ package web
 
 import (
 	"context"
-	"fmt"
 	"net/http"
 	"os"
 	"syscall"
 	"time"
 
-	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
-	"go.opentelemetry.io/otel/exporters/otlp/otlptrace"
-	"go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc"
-	"go.opentelemetry.io/otel/sdk/resource"
-	"go.opentelemetry.io/otel/sdk/trace"
-	semconv "go.opentelemetry.io/otel/semconv/v1.9.0"
-
 	"github.com/dimfeld/httptreemux/v5"
+	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
+	"go.opentelemetry.io/otel/trace"
 )
 
 type Handler func(ctx context.Context, w http.ResponseWriter, r *http.Request) error
