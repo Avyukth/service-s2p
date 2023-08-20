@@ -16,15 +16,6 @@ spec:
         app: sales
     spec:
       containers:
-        # zipkin container configuration
-        - name: zipkin
-          resources:
-            limits:
-              cpu: "500m" # Up to 1/2 full core
-              memory: "256Mi" # Up to 1/2 GB
-            requests:
-              cpu: "250m" # Use 1/4 full core
-              memory: "128Mi" # Use 1/2 GB
         - name: sales-api
           resources:
             limits:
