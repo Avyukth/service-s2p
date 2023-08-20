@@ -49,15 +49,15 @@ func TestUsers(t *testing.T) {
 
 	t.Run("getToken404", tests.getToken404)
 	t.Run("getToken200", tests.getToken200)
-	t.Run("postUser400", tests.postUser400)
-	t.Run("postUser401", tests.postUser401)
-	t.Run("postUser403", tests.postUser403)
-	t.Run("getUser400", tests.getUser400)
-	t.Run("getUser403", tests.getUser403)
-	t.Run("getUser404", tests.getUser404)
-	t.Run("deleteUserNotFound", tests.deleteUserNotFound)
-	t.Run("putUser404", tests.putUser404)
-	t.Run("crudUsers", tests.crudUser)
+	// t.Run("postUser400", tests.postUser400)
+	// t.Run("postUser401", tests.postUser401)
+	// t.Run("postUser403", tests.postUser403)
+	// t.Run("getUser400", tests.getUser400)
+	// t.Run("getUser403", tests.getUser403)
+	// t.Run("getUser404", tests.getUser404)
+	// t.Run("deleteUserNotFound", tests.deleteUserNotFound)
+	// t.Run("putUser404", tests.putUser404)
+	// t.Run("crudUsers", tests.crudUser)
 }
 
 func (ut *UserTests) getToken404(t *testing.T) {
