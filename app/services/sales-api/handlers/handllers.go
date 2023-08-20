@@ -14,6 +14,7 @@ import (
 	"github.com/Avyukth/service3-clone/business/web/mid"
 	"github.com/Avyukth/service3-clone/foundation/web"
 	"github.com/jmoiron/sqlx"
+	"go.opentelemetry.io/otel/trace"
 	"go.uber.org/zap"
 )
 
@@ -22,6 +23,7 @@ type APIMuxConfig struct {
 	Log      *zap.SugaredLogger
 	Auth     *auth.Auth
 	DB       *sqlx.DB
+	Tracer   trace.Tracer
 }
 
 func DebugStandardLibraryMux() *http.ServeMux {

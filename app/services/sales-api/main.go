@@ -84,6 +84,11 @@ func run(log *zap.SugaredLogger) error {
 			MaxOpenConns int    `conf:"default:0"`
 			DisableTLS   bool   `conf:"default:true"`
 		}
+		Tempo struct {
+			ReporterURI string  `conf:"default:localhost:4317"`
+			ServiceName string  `conf:"default:sales-api"`
+			Probability float64 `conf:"default:1"` // Shouldn't use a high value in non-developer systems. 0.05 should be enough for most systems. Some might want to have this even lower
+		}
 	}{
 		Version: conf.Version{
 			Build: build,
@@ -157,6 +162,23 @@ func run(log *zap.SugaredLogger) error {
 	}()
 
 	// =================================================================================================================
+	// Start Tracing Support
+
+	log.Infow("startup", "status", "initializing OT/Tempo tracing support")
+
+	traceProvider, err := startTracing(
+		cfg.Tempo.ServiceName,
+		cfg.Tempo.ReporterURI,
+		cfg.Tempo.Probability,
+	)
+	if err != nil {
+		return fmt.Errorf("starting tracing: %w", err)
+	}
+	defer traceProvider.Shutdown(context.Background())
+
+	tracer := traceProvider.Tracer("service")
+
+	// =================================================================================================================
 	// Starting Debug Service
 
 	log.Infow("startup", "status", "debug router started", "host", cfg.Web.DebugHost)
@@ -179,6 +201,7 @@ func run(log *zap.SugaredLogger) error {
 		Log:      log,
 		Auth:     auth,
 		DB:       db,
+		Tracer:   tracer,
 	})
 
 	api := http.Server{
