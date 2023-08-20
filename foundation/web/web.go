@@ -76,38 +76,3 @@ func (a *App) Handle(method string, group string, path string, handler Handler, 
 	}
 	a.mux.Handle(method, finalPath, h)
 }
-
-// =============================================================================
-
-// startTracing configure open telemetry to be used with Grafana Tempo.
-
-func startTracing(serviceName string, reporterURI string, probability float64) (*trace.TracerProvider, error) {
-
-	exporter, err := otlptrace.New(
-		context.Background(),
-		otlptracegrpc.NewClient(
-			otlptracegrpc.WithInsecure(),
-			otlptracegrpc.WithEndpoint(reporterURI),
-		),
-	)
-
-	if err != nil {
-		return nil, fmt.Errorf("creating new otel exporter: %w", err)
-	}
-
-	traceProvider := trace.NewTracerProvider(
-		trace.WithSampler(trace.TraceIDRatioBased(probability)),
-		trace.WithBatcher(exporter,
-			trace.WithMaxExportBatchSize(trace.DefaultMaxExportBatchSize),
-			trace.WithBatchTimeout(trace.DefaultScheduleDelay*time.Millisecond),
-			trace.WithMaxExportBatchSize(trace.DefaultMaxExportBatchSize),
-		),
-		trace.WithResource(
-			resource.NewWithAttributes(
-				semconv.SchemaURL,
-				semconv.ServiceNameKey.String(serviceName),
-			),
-		),
-	)
-
-}
