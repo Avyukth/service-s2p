@@ -91,6 +91,6 @@ spec:
     - name: sales-api-debug
       port: 4000
       targetPort: sales-api-debug
-    - name: http-grafana
+    - name: grafana
       port: 9411
-      targetPort: http-grafana
+      targetPort: grafana
