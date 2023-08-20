@@ -28,7 +28,8 @@ Create a robust Golang service, deploy it using Docker and Kubernetes, and enhan
 - [x] Onion Layering
 - [x] sqlx used as Database ORM with PostgreSQL
 - [x] Unit testing
-- [ ] Integration testing
+- [x] Integration testing
+- [ ] Opentelemetry with Prometheus
 
 ## Introduction
 
