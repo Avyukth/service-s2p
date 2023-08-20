@@ -12,6 +12,8 @@ import (
 	"github.com/Avyukth/service3-clone/foundation/web"
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
+	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/attribute"
 	"go.uber.org/zap"
 )
 
@@ -101,6 +103,9 @@ func NamedExecContext(ctx context.Context, log *zap.SugaredLogger, db *sqlx.DB, 
 	q := queryString(query, data)
 	log.Infow("database.NameExecContext", "traceid", web.GetTraceID(ctx), "query", q)
 
+	ctx, span := otel.GetTracerProvider().Tracer("").Start(ctx, "database.query")
+	span.SetAttributes(attribute.String("query", q))
+	defer span.End()
 	if _, err := db.NamedExecContext(ctx, q, data); err != nil {
 		return err
 	}
@@ -112,6 +117,9 @@ func NamedQuerySlice(ctx context.Context, log *zap.SugaredLogger, db *sqlx.DB, q
 	q := queryString(query, data)
 	log.Infow("database.NamedQuerySlice", "traceid", web.GetTraceID(ctx), "query", q)
 
+	ctx, span := otel.GetTracerProvider().Tracer("").Start(ctx, "database.query")
+	span.SetAttributes(attribute.String("query", q))
+	defer span.End()
 	val := reflect.ValueOf(dest)
 
 	if val.Kind() != reflect.Ptr || val.Elem().Kind() != reflect.Slice {
@@ -138,6 +146,9 @@ func NamedQueryStruct(ctx context.Context, log *zap.SugaredLogger, db *sqlx.DB, 
 	q := queryString(query, data)
 	log.Infow("database.NamedQueryStruct", "traceid", web.GetTraceID(ctx), "query", q)
 
+	ctx, span := otel.GetTracerProvider().Tracer("").Start(ctx, "database.query")
+	span.SetAttributes(attribute.String("query", q))
+	defer span.End()
 	rows, err := db.NamedQueryContext(ctx, query, data)
 
 	if err != nil {
