@@ -29,7 +29,8 @@ Create a robust Golang service, deploy it using Docker and Kubernetes, and enhan
 - [x] sqlx used as Database ORM with PostgreSQL
 - [x] Unit testing
 - [x] Integration testing
-- [ ] Opentelemetry with Prometheus
+- [ ] Opentelemetry with Prometheus, grafana, Loki, etc
+- [ ] github workflow
 
 ## Introduction
 
