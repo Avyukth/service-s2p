@@ -20,6 +20,7 @@ Create a robust Golang service, deploy it using Docker and Kubernetes, and enhan
 
 ## Things Covered
 
+- [x] Documentation using open api docs
 - [x] Packaged using Kubernetes
 - [x] Dockerized
 - [x] Middleware with JWT authentication
