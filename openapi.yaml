@@ -115,14 +115,54 @@ components:
     User:
       type: "object"
       properties:
-        # Define the properties of a User object here
-        username:
+        id:
+          type: "string"
+        name:
           type: "string"
         email:
           type: "string"
-      required:
-        - username
-        - email
+        roles:
+          type: "string"
+        date_created:
+          type: "string"
+          format: "date-time"
+        date_updated:
+          type: "string"
+          format: "date-time"
+
+    NewUser:
+      type: "object"
+      properties:
+        name:
+          type: "string"
+        email:
+          type: "string"
+          format: "email"
+        roles:
+          type: "array"
+          items:
+            type: "string"
+        password:
+          type: "string"
+        password_confirm:
+          type: "string"
+
+    UpdateUser:
+      type: "object"
+      properties:
+        name:
+          type: "string"
+        email:
+          type: "string"
+          format: "email"
+        roles:
+          type: "array"
+          items:
+            type: "string"
+        password:
+          type: "string"
+        password_confirm:
+          type: "string"
 
   securitySchemes:
     AuthToken:
