@@ -131,3 +131,5 @@ List and explain the different make commands available for managing the project.
 This section is dedicated to the support for Go modules vendor directory.
 
 - `make tidy`: Perform `go mod tidy` and `go mod vendor` to clean up the Go module and vendor dependencies.
+
+##### NB : Inspired by [ardanlabs/service](https://github.com/ardanlabs/service)
