@@ -1,0 +1,171 @@
+openapi: "3.0.0"
+info:
+  title: "Service API"
+  version: "1.0.0"
+paths:
+  /v1/test:
+    get:
+      summary: "Test endpoint"
+      responses:
+        "200":
+          description: "Success response"
+
+  /v1/testauth:
+    get:
+      summary: "Test authentication endpoint"
+      security:
+        - AuthToken: []
+      responses:
+        "200":
+          description: "Success response"
+
+  /v1/users/token:
+    get:
+      summary: "Generate user token"
+      responses:
+        "200":
+          description: "Token generated"
+
+  /v1/users/{page}/{rows}:
+    get:
+      summary: "Query users"
+      parameters:
+        - name: "page"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+        - name: "rows"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+      security:
+        - AuthToken: []
+      responses:
+        "200":
+          description: "Success response"
+
+  /v1/users/{id}:
+    get:
+      summary: "Query user by ID"
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+      security:
+        - AuthToken: []
+      responses:
+        "200":
+          description: "Success response"
+
+    put:
+      summary: "Update user"
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+      security:
+        - AuthToken: []
+      requestBody:
+        description: "User update data"
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/User"
+      responses:
+        "200":
+          description: "User updated"
+
+    delete:
+      summary: "Delete user"
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+      security:
+        - AuthToken: []
+      responses:
+        "200":
+          description: "User deleted"
+
+  /v1/users:
+    post:
+      summary: "Create user"
+      security:
+        - AuthToken: []
+      requestBody:
+        description: "User creation data"
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/User"
+      responses:
+        "201":
+          description: "User created"
+
+components:
+  schemas:
+    User:
+      type: "object"
+      properties:
+        id:
+          type: "string"
+        name:
+          type: "string"
+        email:
+          type: "string"
+        roles:
+          type: "string"
+        date_created:
+          type: "string"
+          format: "date-time"
+        date_updated:
+          type: "string"
+          format: "date-time"
+
+    NewUser:
+      type: "object"
+      properties:
+        name:
+          type: "string"
+        email:
+          type: "string"
+          format: "email"
+        roles:
+          type: "array"
+          items:
+            type: "string"
+        password:
+          type: "string"
+        password_confirm:
+          type: "string"
+
+    UpdateUser:
+      type: "object"
+      properties:
+        name:
+          type: "string"
+        email:
+          type: "string"
+          format: "email"
+        roles:
+          type: "array"
+          items:
+            type: "string"
+        password:
+          type: "string"
+        password_confirm:
+          type: "string"
+
+  securitySchemes:
+    AuthToken:
+      type: "apiKey"
+      in: "header"
+      name: "Authorization"

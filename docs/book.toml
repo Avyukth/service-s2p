@@ -1,0 +1,10 @@
+[book]
+authors = ["Avyukth"]
+language = "en"
+multilingual = false
+src = "src"
+title = "Projetcs"
+
+
+[output.html.redirect]
+"/out.html" = "./api/api.html"
